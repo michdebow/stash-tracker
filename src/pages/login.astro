@@ -1,0 +1,18 @@
+---
+import PublicPageLayout from "@/layouts/PublicPageLayout.astro";
+import { LoginForm } from "@/components/auth/LoginForm";
+
+export const prerender = false;
+---
+
+<PublicPageLayout title="Sign in · StashTracker">
+  <Fragment slot="hero">
+    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary/70">Welcome back</p>
+    <h1 class="text-4xl font-semibold tracking-tight text-foreground md:text-5xl">Sign in to manage your stash</h1>
+    <p class="text-base text-muted-foreground">
+      Stay on top of your finances, budgets, and savings goals. Enter your credentials to access the dashboard.
+    </p>
+  </Fragment>
+
+  <LoginForm client:load />
+</PublicPageLayout>
