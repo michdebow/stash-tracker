@@ -1,0 +1,18 @@
+---
+import PublicPageLayout from "@/layouts/PublicPageLayout.astro"
+import { RegisterForm } from "@/components/auth/RegisterForm"
+
+export const prerender = false
+---
+
+<PublicPageLayout title="Create account · StashTracker">
+  <Fragment slot="hero">
+    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary/70">Create your account</p>
+    <h1 class="text-4xl font-semibold tracking-tight text-foreground md:text-5xl">Join StashTracker today</h1>
+    <p class="text-base text-muted-foreground">
+      Set up your account in minutes to start organizing your stashes, budgets, and savings goals.
+    </p>
+  </Fragment>
+
+  <RegisterForm client:load />
+</PublicPageLayout>
