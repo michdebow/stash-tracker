@@ -4,16 +4,25 @@ import { createServerClient, type CookieOptionsWithName } from '@supabase/ssr';
 
 import type { Database } from './database.types.ts';
 
+// Server-side environment variables (for SSR/middleware)
 const supabaseUrl = import.meta.env.SUPABASE_URL;
 const supabaseKey = import.meta.env.SUPABASE_KEY;
 
+// Client-side environment variables (for browser/React components)
+const publicSupabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const publicSupabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+// Validate server-side variables (required for middleware)
 if (!supabaseUrl || !supabaseKey) {
-  // Fail fast to avoid misconfigured runtime
   throw new Error('Environment variables SUPABASE_URL and SUPABASE_KEY must be provided.');
 }
 
 // Client-side Supabase client (for React components)
-export const supabaseClient = createClient<Database>(supabaseUrl, supabaseKey);
+// Use public vars if available, otherwise fall back to server vars (for SSR hydration)
+const clientUrl = publicSupabaseUrl || supabaseUrl;
+const clientKey = publicSupabaseKey || supabaseKey;
+
+export const supabaseClient = createClient<Database>(clientUrl, clientKey);
 export type SupabaseClient = SupabaseClientBase<Database>;
 
 // Cookie options for server-side client

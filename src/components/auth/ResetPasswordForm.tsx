@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -9,7 +9,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FormErrorAlert } from "@/components/auth/FormErrorAlert";
-import { supabaseClient } from "@/db/supabase.client";
 
 const resetPasswordFormSchema = z
   .object({
@@ -47,24 +46,80 @@ export function ResetPasswordForm() {
   });
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [hasRecoverySession, setHasRecoverySession] = useState<boolean | null>(null);
+
+  // Check for recovery code in URL and verify with backend
+  useEffect(() => {
+    const checkRecoverySession = async () => {
+      try {
+        // Extract recovery code from URL query params
+        if (typeof window === "undefined") return;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get("code");
+
+        if (!code) {
+          setHasRecoverySession(false);
+          setErrorMessage("This password reset link is invalid or has expired. Please request a new one.");
+          return;
+        }
+
+        // Verify the recovery code with backend
+        const response = await fetch("/api/auth/verify-recovery", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          setHasRecoverySession(false);
+          setErrorMessage(errorData.message || "This password reset link is invalid or has expired. Please request a new one.");
+          return;
+        }
+
+        // Valid recovery code - session established on backend
+        setHasRecoverySession(true);
+      } catch (err) {
+        console.error("Failed to check recovery session", err);
+        setHasRecoverySession(false);
+        setErrorMessage("Unable to verify reset link. Please request a new one.");
+      }
+    };
+
+    checkRecoverySession();
+  }, []);
 
   const handleSubmit = async (values: ResetPasswordFormValues) => {
     setErrorMessage(null);
 
     try {
-      const { error } = await supabaseClient.auth.updateUser({
-        password: values.password,
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password: values.password,
+          confirmPassword: values.confirmPassword,
+        }),
       });
 
-      if (error) {
-        const message = error.message?.toLowerCase().includes("expired")
-          ? "This password reset link is invalid or has expired. Please request a new one."
-          : "We couldn't update your password. Please try again.";
+      if (!response.ok) {
+        const errorData = await response.json();
 
-        setErrorMessage(message);
+        if (response.status >= 500) {
+          setErrorMessage("We couldn't update your password right now. Please try again later.");
+        } else {
+          setErrorMessage(errorData.message || "We couldn't update your password. Please try again.");
+        }
+
         return;
       }
 
+      // Successful password reset - redirect to login with success message
       if (typeof window !== "undefined") {
         const redirectUrl = new URL("/login", window.location.origin);
         redirectUrl.searchParams.set("message", "password-reset-success");
@@ -75,6 +130,18 @@ export function ResetPasswordForm() {
       setErrorMessage("We couldn't update your password. Please try again.");
     }
   };
+
+  // Show loading state while checking recovery session
+  if (hasRecoverySession === null) {
+    return (
+      <Card className="border border-border/40 bg-background/80 shadow-lg shadow-black/5 backdrop-blur">
+        <CardContent className="flex items-center justify-center py-12">
+          <Loader2 className="size-8 animate-spin text-muted-foreground" aria-hidden="true" />
+          <span className="sr-only">Verifying reset link...</span>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="border border-border/40 bg-background/80 shadow-lg shadow-black/5 backdrop-blur">
@@ -118,7 +185,7 @@ export function ResetPasswordForm() {
 
             <FormErrorAlert message={errorMessage} />
 
-            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting || !hasRecoverySession}>
               {form.formState.isSubmitting && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
               Set new password
             </Button>
@@ -132,7 +199,11 @@ export function ResetPasswordForm() {
           <span>Your session will refresh automatically after updating your password.</span>
         </div>
         <p>
-          Need to start over? <a href="/reset-password" className="font-medium text-primary hover:underline">Request a new link</a>.
+          Need to start over?{" "}
+          <a href="/reset-password" className="font-medium text-primary hover:underline">
+            Request a new link
+          </a>
+          .
         </p>
       </CardFooter>
     </Card>

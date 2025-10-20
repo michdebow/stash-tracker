@@ -1,8 +1,19 @@
 ---
 import PublicPageLayout from "@/layouts/PublicPageLayout.astro";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { AuthSuccessMessage } from "@/components/auth/AuthSuccessMessage";
 
 export const prerender = false;
+
+// Get success message from query params
+const url = new URL(Astro.request.url);
+const messageType = url.searchParams.get("message");
+
+const successMessages: Record<string, string> = {
+  "password-reset-success": "Your password has been updated successfully. You can now sign in with your new password.",
+};
+
+const successMessage = messageType ? successMessages[messageType] : null;
 ---
 
 <PublicPageLayout title="Sign in · StashTracker">
@@ -14,5 +25,6 @@ export const prerender = false;
     </p>
   </Fragment>
 
+  {successMessage && <AuthSuccessMessage message={successMessage} client:load />}
   <LoginForm client:load />
 </PublicPageLayout>
