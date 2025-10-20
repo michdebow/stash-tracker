@@ -4,7 +4,7 @@ import type { ErrorResponse } from '@/types';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ locals }) => {
+export const POST: APIRoute = async ({ locals, redirect }) => {
   try {
     // Sign out with global scope to revoke all sessions
     const { error } = await locals.supabase.auth.signOut({ scope: 'global' });
@@ -24,10 +24,8 @@ export const POST: APIRoute = async ({ locals }) => {
       });
     }
 
-    // Return 204 No Content on success
-    return new Response(null, {
-      status: 204,
-    });
+    // Redirect to index page after successful logout
+    return redirect('/', 303);
   } catch (err) {
     console.error('Logout endpoint error:', err);
 
