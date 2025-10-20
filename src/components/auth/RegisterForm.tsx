@@ -67,53 +67,33 @@ export function RegisterForm() {
     setErrorMessage(null);
 
     try {
-      const email = values.email.trim();
-      const password = values.password;
-
-      const emailRedirectTo = typeof window !== "undefined" ? `${window.location.origin}/auth/callback` : undefined;
-
-      const { data, error } = await supabaseClient.auth.signUp({
-        email,
-        password,
-        options: emailRedirectTo
-          ? {
-              emailRedirectTo,
-            }
-          : undefined,
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: values.email.trim(),
+          password: values.password,
+          confirmPassword: values.confirmPassword,
+        }),
       });
 
-      if (error) {
-        if ("status" in error && error.status && error.status >= 500) {
-          setErrorMessage("We couldn't create your account right now. Please try again later.");
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle validation errors
+        if (response.status === 400 && "errors" in data) {
+          setErrorMessage(data.message ?? "Please check your input and try again.");
           return;
         }
 
-        if ("code" in error && error.code === "user_already_exists") {
-          setErrorMessage("It looks like you already have an account. Try signing in instead.");
-          return;
-        }
-
-        setErrorMessage(error.message ?? "We couldn't create your account. Please verify your details and try again.");
+        // Handle other errors
+        setErrorMessage(data.message ?? "We couldn't create your account. Please try again.");
         return;
       }
 
-      if (!data.session) {
-        const { error: signInError } = await supabaseClient.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (signInError) {
-          if ("status" in signInError && signInError.status && signInError.status >= 500) {
-            setErrorMessage("Your account was created, but we couldn't sign you in. Please try again.");
-            return;
-          }
-
-          setErrorMessage("We created your account, but couldn't sign you in automatically. Please try logging in.");
-          return;
-        }
-      }
-
+      // Registration successful, redirect to dashboard
       window.location.assign("/app/dashboard");
     } catch (error) {
       console.error("Failed to register", error);

@@ -6,7 +6,7 @@ import { createSupabaseServerInstance } from '../db/supabase.client.ts';
 const PUBLIC_AUTH_PATHS = ['/login', '/register', '/reset-password', '/update-password'];
 
 // API endpoints that don't require authentication
-const PUBLIC_API_PATHS = ['/api/auth/login', '/api/auth/register', '/api/auth/logout'];
+const PUBLIC_API_PATHS = ['/api/auth/login', '/api/auth/register', '/api/auth/logout', '/api/auth/session'];
 
 // Protected app routes
 const PROTECTED_PATH_PREFIX = '/app';

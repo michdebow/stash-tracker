@@ -13,7 +13,7 @@ import { supabaseClient } from "@/db/supabase.client";
 
 const resetPasswordFormSchema = z
   .object({
-    password: z.string().min(8, "Password must be at least 8 characters long"),
+    password: z.string().min(6, "Password must be at least 6 characters long"),
     confirmPassword: z.string().min(1, "Confirm your password"),
   })
   .superRefine((data, ctx) => {
@@ -81,7 +81,7 @@ export function ResetPasswordForm() {
       <CardHeader className="space-y-3 text-center">
         <CardTitle>Choose a new password</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Create a strong password to secure your account. Make sure it&apos;s at least 8 characters long.
+          Create a strong password to secure your account. Make sure it&apos;s at least 6 characters long.
         </p>
       </CardHeader>
 
