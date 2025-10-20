@@ -9,7 +9,6 @@ import { AuthLinks } from "@/components/auth/AuthLinks"
 import { FormErrorAlert } from "@/components/auth/FormErrorAlert"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { supabaseClient } from "@/db/supabase.client"
 
 const loginFormSchema = z.object({
   email: z.string().trim().min(1, "Email is required").email("Enter a valid email"),
@@ -34,23 +33,30 @@ export function LoginForm() {
     setErrorMessage(null)
 
     try {
-      const { error } = await supabaseClient.auth.signInWithPassword({
-        email: values.email.trim(),
-        password: values.password,
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: values.email.trim(),
+          password: values.password,
+        }),
       })
 
-      if (error) {
-        const status = "status" in error ? error.status : null
-
-        if (status && status >= 500) {
+      if (!response.ok) {
+        const errorData = await response.json()
+        
+        if (response.status >= 500) {
           setErrorMessage("We couldn't sign you in right now. Please try again later.")
         } else {
-          setErrorMessage("Unable to sign in. Check your email and password.")
+          setErrorMessage(errorData.message || "Unable to sign in. Check your email and password.")
         }
 
         return
       }
 
+      // Successful login - redirect to dashboard
       window.location.assign("/app/dashboard")
     } catch (authError) {
       console.error("Failed to sign in", authError)

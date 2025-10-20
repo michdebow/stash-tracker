@@ -1,0 +1,41 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+export const prerender = false;
+
+const { user } = Astro.locals;
+
+if (!user) {
+  return Astro.redirect("/login");
+}
+---
+
+<Layout title="Dashboard · StashTracker">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold mb-4">Dashboard</h1>
+    <p class="text-lg mb-4">Welcome back, {user.email}!</p>
+    
+    <div class="rounded-lg border border-border bg-card p-6">
+      <h2 class="text-2xl font-semibold mb-4">Your Account</h2>
+      <dl class="space-y-2">
+        <div>
+          <dt class="font-medium text-muted-foreground">User ID:</dt>
+          <dd class="font-mono text-sm">{user.id}</dd>
+        </div>
+        <div>
+          <dt class="font-medium text-muted-foreground">Email:</dt>
+          <dd>{user.email}</dd>
+        </div>
+      </dl>
+      
+      <form action="/api/auth/logout" method="POST" class="mt-6">
+        <button 
+          type="submit"
+          class="rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
+        >
+          Sign Out
+        </button>
+      </form>
+    </div>
+  </div>
+</Layout>
