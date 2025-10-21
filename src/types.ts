@@ -1,4 +1,5 @@
 import type { Tables, TablesInsert, TablesUpdate } from "./db/database.types";
+import { z } from "zod";
 
 // ============================================================================
 // Entity Types (Direct references to database tables)
@@ -65,6 +66,14 @@ export type MonthBudgetDTO = Omit<MonthBudget, "deleted_at" | "user_id">;
 export type ExpenseDTO = Omit<Expense, "deleted_at" | "user_id">;
 
 /**
+ * DTO for a single stash with optional recent transactions.
+ * Used by the GET /api/stashes/{stashId} endpoint
+ */
+export interface StashDetailsDTO extends StashDTO {
+  transactions?: StashTransactionDTO[];
+}
+
+/**
  * DTO for expense summary aggregation
  * Returns category-wise totals for a given month
  */
@@ -88,6 +97,15 @@ export type CreateStashCommand = Pick<TablesInsert<"stashes">, "name">;
  * Only allows renaming the stash
  */
 export type UpdateStashCommand = Pick<TablesUpdate<"stashes">, "name">;
+
+/**
+ * Command to delete a stash
+ * Contains stashId and userId for authorization
+ */
+export interface DeleteStashCommand {
+  stashId: string;
+  userId: string;
+}
 
 /**
  * Command to create a new stash transaction
@@ -153,6 +171,46 @@ export interface PaginatedResponse<T> {
   page: number;
   page_size: number;
   total: number;
+}
+
+/**
+ * Zod schema for validating the query parameters of the List Stashes endpoint.
+ */
+export const ListStashesQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  sort: z.enum(['created_at', 'name']).default('created_at'),
+  order: z.enum(['asc', 'desc']).default('desc'),
+});
+
+/**
+ * Type derived from the Zod schema for use in the service layer.
+ */
+export type ListStashesQuery = z.infer<typeof ListStashesQuerySchema>;
+
+/**
+ * Zod schema for validating the request body of the Update Stash Name endpoint.
+ */
+export const UpdateStashNameDto = z.object({
+  name: z.string().min(1, 'Name cannot be empty.').max(100, 'Name cannot exceed 100 characters.'),
+});
+
+/**
+ * DTO for the items in the stash list response.
+ * Reuses the existing StashDTO.
+ */
+export type StashListItemDTO = StashDTO;
+
+/**
+ * Standardized paginated API response structure.
+ */
+export interface ApiPaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+  };
 }
 
 /**
