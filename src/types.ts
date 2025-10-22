@@ -189,6 +189,23 @@ export const ListStashesQuerySchema = z.object({
 export type ListStashesQuery = z.infer<typeof ListStashesQuerySchema>;
 
 /**
+ * Zod schema for validating the query parameters of the List Stash Transactions endpoint.
+ */
+export const ListTransactionsQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  type: z.enum(['deposit', 'withdrawal']).optional(),
+  from: z.string().datetime().optional(),
+  to: z.string().datetime().optional(),
+  order: z.enum(['asc', 'desc']).default('desc'),
+});
+
+/**
+ * Type derived from the ListTransactionsQuerySchema for use in the service layer.
+ */
+export type ListTransactionsQuery = z.infer<typeof ListTransactionsQuerySchema>;
+
+/**
  * Zod schema for validating the request body of the Update Stash Name endpoint.
  */
 export const UpdateStashNameDto = z.object({

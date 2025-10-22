@@ -1,0 +1,45 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { getStashDetails, StashNotFoundError } from "@/lib/services/stash.service";
+import { StashDetailView } from "@/components/stashes/StashDetailView";
+
+export const prerender = false;
+
+const { user, supabase } = Astro.locals;
+
+// Redirect if not authenticated (AppLayout will handle this, but double-check)
+if (!user) {
+  return Astro.redirect("/login");
+}
+
+// Get stash ID from URL params
+const { id } = Astro.params;
+
+// Validate stash ID format (basic UUID check)
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+if (!id || !uuidRegex.test(id)) {
+  return Astro.redirect("/404");
+}
+
+// Fetch initial stash data
+let initialStashData;
+try {
+  initialStashData = await getStashDetails(supabase, user.id, id, false);
+} catch (error) {
+  if (error instanceof StashNotFoundError) {
+    return Astro.redirect("/404");
+  }
+  console.error("Error fetching stash details:", error);
+  return Astro.redirect("/app/stashes");
+}
+
+const pageTitle = `${initialStashData.name} - StashTracker`;
+---
+
+<AppLayout title={pageTitle}>
+  <StashDetailView 
+    client:load 
+    initialStashData={initialStashData} 
+    stashId={id} 
+  />
+</AppLayout>

@@ -1,0 +1,61 @@
+---
+import Layout from "./Layout.astro";
+
+interface Props {
+  title?: string;
+}
+
+const { title = "StashTracker" } = Astro.props;
+
+export const prerender = false;
+
+const { user } = Astro.locals;
+
+if (!user) {
+  return Astro.redirect("/login");
+}
+---
+
+<Layout title={title}>
+  <div class="min-h-screen bg-background">
+    <header class="border-b border-border bg-card">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-6">
+            <a href="/app/dashboard" class="text-xl font-bold">
+              StashTracker
+            </a>
+            <nav class="flex gap-4">
+              <a 
+                href="/app/dashboard" 
+                class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Dashboard
+              </a>
+              <a 
+                href="/app/stashes" 
+                class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Stashes
+              </a>
+            </nav>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-sm text-muted-foreground">{user.email}</span>
+            <form action="/api/auth/logout" method="POST">
+              <button 
+                type="submit"
+                class="rounded-md bg-destructive px-3 py-1.5 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 transition-colors"
+              >
+                Sign Out
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="container mx-auto px-4 py-8">
+      <slot />
+    </main>
+  </div>
+</Layout>

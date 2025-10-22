@@ -2,7 +2,14 @@ import type { APIRoute } from "astro";
 import { z } from "zod";
 import type { ErrorResponse, ValidationErrorResponse, StashDTO } from "@/types";
 import { UpdateStashNameDto } from "@/types";
-import { getStashDetails, updateStashName, deleteStash, StashNotFoundError, DuplicateStashError, DatabaseConstraintError } from "@/lib/services/stash.service";
+import {
+  getStashDetails,
+  updateStashName,
+  deleteStash,
+  StashNotFoundError,
+  DuplicateStashError,
+  DatabaseConstraintError,
+} from "@/lib/services/stash.service";
 
 export const prerender = false;
 
@@ -15,20 +22,19 @@ const GetStashParamsSchema = z.object({
     .string()
     .optional()
     .transform((val) => val === "true")
-    .pipe(z.boolean())
-    .default(false as never),
+    .default("false"),
 });
 
 /**
  * GET /api/stashes/{stashId}
  * Retrieves detailed information for a specific stash belonging to the authenticated user.
- * 
+ *
  * Path Parameters:
  * - stashId: string (UUID) - The unique identifier of the stash
- * 
+ *
  * Query Parameters:
  * - includeTransactions: boolean (default: false) - Include 50 most recent transactions
- * 
+ *
  * Returns:
  * - 200: Stash details with optional transactions
  * - 400: Invalid stash ID format
@@ -53,7 +59,7 @@ export const GET: APIRoute = async ({ params, url, locals }) => {
 
     // Parse and validate parameters
     const includeTransactionsParam = url.searchParams.get("includeTransactions") || undefined;
-    
+
     const validation = GetStashParamsSchema.safeParse({
       stashId: params.stashId,
       includeTransactions: includeTransactionsParam,
@@ -126,13 +132,13 @@ export const GET: APIRoute = async ({ params, url, locals }) => {
 /**
  * PATCH /api/stashes/{stashId}
  * Updates the name of a specific stash belonging to the authenticated user.
- * 
+ *
  * Path Parameters:
  * - stashId: string (UUID) - The unique identifier of the stash
- * 
+ *
  * Request Body:
  * - name: string (1-100 characters) - The new name for the stash
- * 
+ *
  * Returns:
  * - 200: Updated stash data
  * - 400: Invalid stash ID format or validation error
@@ -283,10 +289,10 @@ export const PATCH: APIRoute = async ({ params, request, locals }) => {
 /**
  * DELETE /api/stashes/{stashId}
  * Soft-deletes a specific stash belonging to the authenticated user.
- * 
+ *
  * Path Parameters:
  * - stashId: string (UUID) - The unique identifier of the stash to delete
- * 
+ *
  * Returns:
  * - 204: Stash successfully deleted (no content)
  * - 400: Invalid stash ID format
