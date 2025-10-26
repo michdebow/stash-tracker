@@ -1,0 +1,25 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { BudgetView } from "@/components/budget/BudgetView";
+
+export const prerender = false;
+
+const { user } = Astro.locals;
+
+if (!user) {
+  return Astro.redirect("/login");
+}
+---
+
+<AppLayout title="Budget - StashTracker">
+  <div class="space-y-8">
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight">Budget</h1>
+      <p class="mt-2 text-muted-foreground">
+        Set and manage your monthly spending budgets
+      </p>
+    </div>
+
+    <BudgetView client:load />
+  </div>
+</AppLayout>

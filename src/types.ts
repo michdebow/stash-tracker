@@ -66,6 +66,20 @@ export type MonthBudgetDTO = Omit<MonthBudget, "deleted_at" | "user_id">;
 export type ExpenseDTO = Omit<Expense, "deleted_at" | "user_id">;
 
 /**
+ * DTO for expense list item responses
+ * Used by the GET /api/expenses endpoint for listing expenses
+ */
+export interface ExpenseListItemDTO {
+  id: string;
+  category_id: string | null;
+  amount: number;
+  expense_date: string;
+  year_month: string;
+  description: string;
+  created_at: string;
+}
+
+/**
  * DTO for a single stash with optional recent transactions.
  * Used by the GET /api/stashes/{stashId} endpoint
  */
@@ -133,7 +147,7 @@ export type UpsertBudgetCommand = Pick<TablesInsert<"month_budget">, "budget_set
 
 /**
  * Command to create a new expense
- * Requires amount, category_id, expense_date, and optional description
+ * Requires amount, expense_date, description, and optional category_id
  * year_month is auto-generated from expense_date
  */
 export type CreateExpenseCommand = Pick<
@@ -148,6 +162,15 @@ export type CreateExpenseCommand = Pick<
 export type UpdateExpenseCommand = Partial<
   Pick<TablesUpdate<"expenses">, "amount" | "category_id" | "expense_date" | "description">
 >;
+
+/**
+ * Command to delete an expense
+ * Contains expenseId and userId for authorization
+ */
+export interface DeleteExpenseCommand {
+  expenseId: string;
+  userId: string;
+}
 
 // ============================================================================
 // Pagination & Query Types
@@ -206,6 +229,65 @@ export const ListTransactionsQuerySchema = z.object({
 export type ListTransactionsQuery = z.infer<typeof ListTransactionsQuerySchema>;
 
 /**
+ * Zod schema for validating the query parameters of the List Month Budgets endpoint.
+ */
+export const ListBudgetsQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(60).default(12),
+  year: z.string().regex(/^\d{4}$/).optional(),
+  order: z.enum(['asc', 'desc']).default('desc'),
+});
+
+/**
+ * Type derived from the ListBudgetsQuerySchema for use in the service layer.
+ */
+export type ListBudgetsQuery = z.infer<typeof ListBudgetsQuerySchema>;
+
+/**
+ * Zod schema for validating the query parameters of the List Expenses endpoint.
+ * Includes mutual exclusivity validation between yearMonth and from/to filters.
+ */
+export const ListExpensesQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD').optional(),
+  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD').optional(),
+  categoryId: z.string().uuid('Invalid category ID format').optional(),
+  yearMonth: z.string().regex(/^\d{4}-\d{2}$/, 'Invalid year-month format. Use YYYY-MM').optional(),
+  search: z.string().trim().min(1).max(200).optional(),
+  sort: z.enum(['expense_date', 'amount']).default('expense_date'),
+  order: z.enum(['asc', 'desc']).default('desc'),
+}).refine(
+  (data) => {
+    // yearMonth and from/to are mutually exclusive
+    const hasYearMonth = !!data.yearMonth;
+    const hasDateRange = !!data.from || !!data.to;
+    return !(hasYearMonth && hasDateRange);
+  },
+  {
+    message: 'Cannot use yearMonth filter together with from/to date range',
+    path: ['yearMonth'],
+  }
+).refine(
+  (data) => {
+    // If both from and to are provided, from must be <= to
+    if (data.from && data.to) {
+      return data.from <= data.to;
+    }
+    return true;
+  },
+  {
+    message: 'from date must be less than or equal to to date',
+    path: ['from'],
+  }
+);
+
+/**
+ * Type derived from the ListExpensesQuerySchema for use in the service layer.
+ */
+export type ListExpensesQuery = z.infer<typeof ListExpensesQuerySchema>;
+
+/**
  * Zod schema for validating the request body of the Update Stash Name endpoint.
  */
 export const UpdateStashNameDto = z.object({
@@ -217,6 +299,12 @@ export const UpdateStashNameDto = z.object({
  * Reuses the existing StashDTO.
  */
 export type StashListItemDTO = StashDTO;
+
+/**
+ * DTO for the items in the month budgets list response.
+ * Reuses the existing MonthBudgetDTO.
+ */
+export type MonthBudgetListItemDTO = MonthBudgetDTO;
 
 /**
  * Standardized paginated API response structure.
@@ -274,4 +362,36 @@ export interface ErrorResponse {
  */
 export interface ValidationErrorResponse extends ErrorResponse {
   errors: Record<string, string[]>;
+}
+
+// ============================================================================
+// Dashboard Types
+// ============================================================================
+
+/**
+ * DTO for dashboard stash summary
+ */
+export interface DashboardStashSummary {
+  totalStashes: number;
+  totalBalance: number;
+  stashes: StashDTO[];
+}
+
+/**
+ * DTO for dashboard budget summary
+ */
+export interface DashboardBudgetSummary {
+  yearMonth: string;
+  budgetSet: number | null;
+  totalExpenses: number;
+  currentBalance: number | null;
+  hasNoBudget: boolean;
+}
+
+/**
+ * DTO for complete dashboard data
+ */
+export interface DashboardData {
+  stashes: DashboardStashSummary;
+  budget: DashboardBudgetSummary;
 }
