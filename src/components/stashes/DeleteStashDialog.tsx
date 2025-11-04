@@ -18,13 +18,7 @@ interface DeleteStashDialogProps {
   onSuccess?: () => void;
 }
 
-export function DeleteStashDialog({
-  stashId,
-  stashName,
-  open,
-  onOpenChange,
-  onSuccess,
-}: DeleteStashDialogProps) {
+export function DeleteStashDialog({ stashId, stashName, open, onOpenChange, onSuccess }: DeleteStashDialogProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -67,7 +61,7 @@ export function DeleteStashDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" data-testid="delete-stash-dialog">
         <DialogHeader>
           <DialogTitle>Delete Stash</DialogTitle>
           <DialogDescription>
@@ -80,20 +74,10 @@ export function DeleteStashDialog({
           </Alert>
         )}
         <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isDeleting}
-          >
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isDeleting}>
             Cancel
           </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
+          <Button type="button" variant="destructive" onClick={handleDelete} disabled={isDeleting}>
             {isDeleting ? "Deleting..." : "Delete"}
           </Button>
         </DialogFooter>

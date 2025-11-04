@@ -94,6 +94,7 @@ export function StashListItem({ stash, onMutate }: StashListItemProps) {
                       setDeleteDialogOpen(true);
                     }}
                     className="text-destructive focus:text-destructive"
+                    data-testid="open-delete-stash-dialog"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
