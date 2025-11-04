@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env.test"), debug: true });
 export default defineConfig({
@@ -30,4 +33,5 @@ export default defineConfig({
     url: "http://localhost:4321",
     reuseExistingServer: !process.env.CI,
   },
+  globalTeardown: path.join(__dirname, "./tests/e2e/global-teardown.ts"),
 });
