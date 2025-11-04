@@ -13,8 +13,8 @@ export default defineConfig({
     timeout: 5 * 1000,
   },
   fullyParallel: true,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : undefined,
+  retries: process.env.CI ? 1 : 0,
+  workers: 1,
   reporter: process.env.CI ? [["github"], ["html"]] : "list",
   use: {
     trace: "on-first-retry",

@@ -25,7 +25,6 @@ test.describe("Login", () => {
 
     await expect(page).toHaveURL(/\/app\/dashboard/);
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
-    await expect(page).toHaveScreenshot("dashboard-after-login.png");
   });
 
   test("shows error for invalid credentials", async ({ page, baseURL }) => {

@@ -54,12 +54,12 @@ export function BudgetDetails({ yearMonth, refreshTrigger = 0 }: BudgetDetailsPr
       }
 
       if (!response.ok) {
-        const errorData = await response.json() as ErrorResponse;
+        const errorData = (await response.json()) as ErrorResponse;
         setError(errorData.message || "Failed to fetch budget details");
         return;
       }
 
-      const data = await response.json() as { data: MonthBudgetDTO };
+      const data = (await response.json()) as { data: MonthBudgetDTO };
       setBudget(data.data);
     } catch (err) {
       console.error("Error fetching budget details:", err);
@@ -88,9 +88,7 @@ export function BudgetDetails({ yearMonth, refreshTrigger = 0 }: BudgetDetailsPr
     <Card>
       <CardHeader>
         <CardTitle>Budget for {formatMonthLabel(yearMonth)}</CardTitle>
-        <CardDescription>
-          View your budget details and spending progress
-        </CardDescription>
+        <CardDescription>View your budget details and spending progress</CardDescription>
       </CardHeader>
       <CardContent>
         {/* Loading State */}
@@ -121,17 +119,19 @@ export function BudgetDetails({ yearMonth, refreshTrigger = 0 }: BudgetDetailsPr
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Budget Set</p>
-                <p className="text-2xl font-bold">{formatCurrency(budget.budget_set)}</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Spent</p>
-                <p className="text-2xl font-bold text-destructive">
-                  {formatCurrency(budgetSpent)}
+                <p className="text-2xl font-bold" data-testid="set-budget-amount">
+                  {formatCurrency(budget.budget_set)}
                 </p>
               </div>
               <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Spent</p>
+                <p className="text-2xl font-bold text-destructive">{formatCurrency(budgetSpent)}</p>
+              </div>
+              <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Remaining</p>
-                <p className={`text-2xl font-bold ${remainingBudget >= 0 ? "text-green-600 dark:text-green-400" : "text-destructive"}`}>
+                <p
+                  className={`text-2xl font-bold ${remainingBudget >= 0 ? "text-green-600 dark:text-green-400" : "text-destructive"}`}
+                >
                   {formatCurrency(remainingBudget)}
                 </p>
               </div>
@@ -146,11 +146,7 @@ export function BudgetDetails({ yearMonth, refreshTrigger = 0 }: BudgetDetailsPr
               <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                 <div
                   className={`h-full transition-all ${
-                    percentageSpent > 100
-                      ? "bg-destructive"
-                      : percentageSpent > 80
-                      ? "bg-yellow-500"
-                      : "bg-green-500"
+                    percentageSpent > 100 ? "bg-destructive" : percentageSpent > 80 ? "bg-yellow-500" : "bg-green-500"
                   }`}
                   style={{ width: `${Math.min(percentageSpent, 100)}%` }}
                 />
