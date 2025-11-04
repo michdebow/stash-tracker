@@ -101,6 +101,29 @@ The application uses a single currency (PLN) and focuses on manual data.
 | `npm run lint` | Run ESLint to check for code issues |
 | `npm run lint:fix` | Automatically fix ESLint issues where possible |
 | `npm run format` | Format code using Prettier |
+| `npm run test` | Run Vitest in watch mode |
+| `npm run test:unit` | Execute the full Vitest suite once |
+| `npm run test:unit:watch` | Re-run affected Vitest suites on file changes |
+| `npm run test:coverage` | Generate an HTML and LCOV coverage report via Vitest |
+| `npm run test:e2e` | Run Playwright end-to-end tests in headless Chromium |
+| `npm run test:e2e:headed` | Run Playwright E2E tests with a visible browser |
+| `npm run test:e2e:report` | Open the most recent Playwright HTML report |
+
+## Testing
+
+### Unit & Integration Testing (Vitest)
+
+- **Commands**: `npm run test` for watch mode, `npm run test:unit` for CI-style runs, `npm run test:coverage` for V8-based coverage.
+- **Configuration**: `vitest.config.ts` uses the React plugin, resolves `@` to `src/`, and loads shared setup from `src/tests/setup.ts` (registers `@testing-library/jest-dom` and cleans up renders).
+- **Guidelines**: Follow the mocking, structure, and jsdom practices outlined in `.windsurf/rules/vitest.md`.
+- **Scope**: Align scenarios and coverage priorities with `_ai/test-plan.md` (Unit/Integration sections).
+
+### End-to-End Testing (Playwright)
+
+- **Commands**: `npm run test:e2e` (headless) or `npm run test:e2e:headed` for local debugging. View run history with `npm run test:e2e:report`.
+- **Configuration**: `playwright.config.ts` targets Chromium (`Desktop Chrome` profile), records traces on first retry, and boots the Astro dev server on `http://localhost:4321` when needed.
+- **Guidelines**: Apply the Page Object Model, locator usage, and trace review practices documented in `.windsurf/rules/playwright.md`.
+- **Test Plan Alignment**: Reference flow coverage requirements and environment notes in `_ai/test-plan.md` (E2E section).
 
 ## Project Scope
 

@@ -1,0 +1,33 @@
+import { defineConfig, devices } from "@playwright/test";
+import path from "node:path";
+import dotenv from "dotenv";
+
+dotenv.config({ path: path.resolve(process.cwd(), ".env.test"), debug: true });
+export default defineConfig({
+  testDir: "./tests/e2e",
+  timeout: 30 * 1000,
+  expect: {
+    timeout: 5 * 1000,
+  },
+  fullyParallel: true,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 2 : undefined,
+  reporter: process.env.CI ? [["github"], ["html"]] : "list",
+  use: {
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:4321",
+  },
+  projects: [
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+    },
+  ],
+  webServer: {
+    command: "npm run dev:e2e -- --host --port 4321",
+    url: "http://localhost:4321",
+    reuseExistingServer: !process.env.CI,
+  },
+});

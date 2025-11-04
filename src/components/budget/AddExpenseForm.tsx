@@ -48,7 +48,6 @@ export function AddExpenseForm({ yearMonth, onSuccess }: AddExpenseFormProps) {
         setCategories(result.data || []);
       } catch (err) {
         console.error("Error loading categories:", err);
-        setError("Failed to load expense categories");
       } finally {
         setIsLoadingCategories(false);
       }
@@ -119,7 +118,7 @@ export function AddExpenseForm({ yearMonth, onSuccess }: AddExpenseFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {error && (
         <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
           {error}
