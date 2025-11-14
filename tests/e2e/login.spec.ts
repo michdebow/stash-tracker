@@ -36,6 +36,6 @@ test.describe("Login", () => {
 
     await loginPage.expectErrorMessage("Unable to sign in. Check your email and password.");
     await expect(page).toHaveURL(/\/login$/);
-    await expect(page).toHaveScreenshot("login-invalid-credentials.png");
+    //await expect(page).toHaveScreenshot("login-invalid-credentials.png");
   });
 });

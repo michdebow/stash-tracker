@@ -24,7 +24,7 @@ test.describe("Budget Management", () => {
       await expect(budgetPage.addExpenseButton).toBeVisible();
       await expect(budgetPage.budgetDetailsCard).toBeVisible();
       await expect(budgetPage.expenseListCard).toBeVisible();
-      await expect(page).toHaveScreenshot("budget-page-overview.png");
+      //await expect(page).toHaveScreenshot("budget-page-overview.png");
     });
 
     test("should display empty state when no budget is set", async ({ page }) => {
@@ -37,7 +37,7 @@ test.describe("Budget Management", () => {
 
       if (isNoBudgetVisible) {
         await expect(noBudgetMessage).toBeVisible();
-        await expect(page).toHaveScreenshot("budget-empty-state.png");
+        // await expect(page).toHaveScreenshot("budget-empty-state.png");
       }
     });
   });

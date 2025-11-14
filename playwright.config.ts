@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-dotenv.config({ path: path.resolve(process.cwd(), ".env.test"), debug: true });
+dotenv.config({ path: path.resolve(process.cwd(), ".env.test"), debug: false });
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30 * 1000,
@@ -14,7 +14,7 @@ export default defineConfig({
   },
   fullyParallel: true,
   retries: process.env.CI ? 1 : 0,
-  workers: 1,
+  workers: 3,
   reporter: process.env.CI ? [["github"], ["html"]] : "list",
   use: {
     trace: "on-first-retry",

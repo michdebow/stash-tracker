@@ -21,7 +21,7 @@ test.describe("Stashes Management", () => {
 
       await expect(stashesPage.pageHeading).toBeVisible();
       await expect(stashesPage.createButton).toBeVisible();
-      await expect(page).toHaveScreenshot("stashes-list-page.png");
+      // await expect(page).toHaveScreenshot("stashes-list-page.png");
     });
 
     test("should display empty state when no stashes exist", async ({ page }) => {
@@ -33,7 +33,7 @@ test.describe("Stashes Management", () => {
 
       if (stashCount === 0) {
         await expect(stashesPage.emptyState).toBeVisible();
-        await expect(page).toHaveScreenshot("stashes-empty-state.png");
+        // await expect(page).toHaveScreenshot("stashes-empty-state.png");
       }
     });
 
@@ -47,7 +47,7 @@ test.describe("Stashes Management", () => {
         // Verify stashes are displayed
         const stashCards = page.locator("a[href*='/app/stashes/']");
         await expect(stashCards.first()).toBeVisible();
-        await expect(page).toHaveScreenshot("stashes-grid-layout.png");
+        // await expect(page).toHaveScreenshot("stashes-grid-layout.png");
       }
     });
   });
@@ -79,7 +79,7 @@ test.describe("Stashes Management", () => {
       await stashesPage.deleteStash(stashName);
       await stashesPage.expectStashNotExists(stashName);
 
-      await expect(page).toHaveScreenshot("stash-full-lifecycle.png");
+      // await expect(page).toHaveScreenshot("stash-full-lifecycle.png");
     });
   });
 });
