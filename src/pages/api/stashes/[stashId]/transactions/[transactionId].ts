@@ -19,11 +19,11 @@ const TransactionIdParamSchema = z.string().uuid("Invalid transaction ID format"
  * DELETE /api/stashes/{stashId}/transactions/{transactionId}
  * Soft-deletes a specific transaction by setting its deleted_at timestamp.
  * This action reverses the transaction's impact on the stash balance.
- * 
+ *
  * Path Parameters:
  * - stashId: string (UUID) - The unique identifier of the stash
  * - transactionId: string (UUID) - The unique identifier of the transaction to delete
- * 
+ *
  * Returns:
  * - 204: Transaction deleted successfully (no content)
  * - 400: Invalid path parameters
@@ -89,12 +89,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
     }
 
     // Soft-delete the transaction using the service
-    await softDeleteTransaction(
-      locals.supabase,
-      locals.user.id,
-      stashIdValidation.data,
-      transactionIdValidation.data
-    );
+    await softDeleteTransaction(locals.supabase, locals.user.id, stashIdValidation.data, transactionIdValidation.data);
 
     // Return success response with 204 No Content
     return new Response(null, {

@@ -1,11 +1,16 @@
 import type { SupabaseClient } from "@/db/supabase.client";
-import type { ListTransactionsQuery, StashTransactionDTO, ApiPaginatedResponse, CreateStashTransactionCommand } from "@/types";
+import type {
+  ListTransactionsQuery,
+  StashTransactionDTO,
+  ApiPaginatedResponse,
+  CreateStashTransactionCommand,
+} from "@/types";
 
 /**
  * Custom error class for stash not found
  */
 export class StashNotFoundError extends Error {
-  constructor(message: string = "Stash not found") {
+  constructor(message = "Stash not found") {
     super(message);
     this.name = "StashNotFoundError";
   }
@@ -15,7 +20,7 @@ export class StashNotFoundError extends Error {
  * Custom error class for insufficient balance
  */
 export class InsufficientBalanceError extends Error {
-  constructor(message: string = "Insufficient balance for withdrawal") {
+  constructor(message = "Insufficient balance for withdrawal") {
     super(message);
     this.name = "InsufficientBalanceError";
   }
@@ -25,7 +30,7 @@ export class InsufficientBalanceError extends Error {
  * Custom error class for transaction not found
  */
 export class TransactionNotFoundError extends Error {
-  constructor(message: string = "Transaction not found") {
+  constructor(message = "Transaction not found") {
     super(message);
     this.name = "TransactionNotFoundError";
   }
@@ -33,7 +38,7 @@ export class TransactionNotFoundError extends Error {
 
 /**
  * Retrieves a paginated and filterable list of transactions for a specific stash.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param stashId - The unique identifier of the stash
@@ -120,7 +125,7 @@ export async function listStashTransactions(
 /**
  * Creates a new transaction for a specific stash.
  * Database triggers will automatically update the stash's current_balance.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param stashId - The unique identifier of the stash
@@ -169,23 +174,23 @@ export async function createTransaction(
 
   if (error) {
     console.error("Error creating transaction:", error);
-    
+
     // Check for specific database errors
     // P0001: raise_exception from trigger (insufficient balance)
     if (error.code === "P0001" && error.message?.includes("Insufficient balance")) {
       throw new InsufficientBalanceError();
     }
-    
+
     // 23514: Check constraint violation (e.g., amount must be positive)
     if (error.code === "23514") {
       throw new Error("Transaction validation failed: " + error.message);
     }
-    
+
     // 23503: Foreign key violation (stash doesn't exist)
     if (error.code === "23503") {
       throw new StashNotFoundError();
     }
-    
+
     throw new Error("Failed to create transaction");
   }
 
@@ -199,7 +204,7 @@ export async function createTransaction(
 /**
  * Soft-deletes a transaction by setting its deleted_at timestamp.
  * This reverses the transaction's impact on the stash balance via database triggers.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param stashId - The unique identifier of the stash

@@ -202,8 +202,8 @@ export interface PaginatedResponse<T> {
 export const ListStashesQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
-  sort: z.enum(['created_at', 'name']).default('created_at'),
-  order: z.enum(['asc', 'desc']).default('desc'),
+  sort: z.enum(["created_at", "name"]).default("created_at"),
+  order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 /**
@@ -217,10 +217,10 @@ export type ListStashesQuery = z.infer<typeof ListStashesQuerySchema>;
 export const ListTransactionsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
-  type: z.enum(['deposit', 'withdrawal']).optional(),
+  type: z.enum(["deposit", "withdrawal"]).optional(),
   from: z.string().datetime().optional(),
   to: z.string().datetime().optional(),
-  order: z.enum(['asc', 'desc']).default('desc'),
+  order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 /**
@@ -234,8 +234,11 @@ export type ListTransactionsQuery = z.infer<typeof ListTransactionsQuerySchema>;
 export const ListBudgetsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(60).default(12),
-  year: z.string().regex(/^\d{4}$/).optional(),
-  order: z.enum(['asc', 'desc']).default('desc'),
+  year: z
+    .string()
+    .regex(/^\d{4}$/)
+    .optional(),
+  order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 /**
@@ -247,40 +250,52 @@ export type ListBudgetsQuery = z.infer<typeof ListBudgetsQuerySchema>;
  * Zod schema for validating the query parameters of the List Expenses endpoint.
  * Includes mutual exclusivity validation between yearMonth and from/to filters.
  */
-export const ListExpensesQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
-  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD').optional(),
-  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD').optional(),
-  categoryId: z.string().uuid('Invalid category ID format').optional(),
-  yearMonth: z.string().regex(/^\d{4}-\d{2}$/, 'Invalid year-month format. Use YYYY-MM').optional(),
-  search: z.string().trim().min(1).max(200).optional(),
-  sort: z.enum(['expense_date', 'amount']).default('expense_date'),
-  order: z.enum(['asc', 'desc']).default('desc'),
-}).refine(
-  (data) => {
-    // yearMonth and from/to are mutually exclusive
-    const hasYearMonth = !!data.yearMonth;
-    const hasDateRange = !!data.from || !!data.to;
-    return !(hasYearMonth && hasDateRange);
-  },
-  {
-    message: 'Cannot use yearMonth filter together with from/to date range',
-    path: ['yearMonth'],
-  }
-).refine(
-  (data) => {
-    // If both from and to are provided, from must be <= to
-    if (data.from && data.to) {
-      return data.from <= data.to;
+export const ListExpensesQuerySchema = z
+  .object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+    from: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Use YYYY-MM-DD")
+      .optional(),
+    to: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Use YYYY-MM-DD")
+      .optional(),
+    categoryId: z.string().uuid("Invalid category ID format").optional(),
+    yearMonth: z
+      .string()
+      .regex(/^\d{4}-\d{2}$/, "Invalid year-month format. Use YYYY-MM")
+      .optional(),
+    search: z.string().trim().min(1).max(200).optional(),
+    sort: z.enum(["expense_date", "amount"]).default("expense_date"),
+    order: z.enum(["asc", "desc"]).default("desc"),
+  })
+  .refine(
+    (data) => {
+      // yearMonth and from/to are mutually exclusive
+      const hasYearMonth = !!data.yearMonth;
+      const hasDateRange = !!data.from || !!data.to;
+      return !(hasYearMonth && hasDateRange);
+    },
+    {
+      message: "Cannot use yearMonth filter together with from/to date range",
+      path: ["yearMonth"],
     }
-    return true;
-  },
-  {
-    message: 'from date must be less than or equal to to date',
-    path: ['from'],
-  }
-);
+  )
+  .refine(
+    (data) => {
+      // If both from and to are provided, from must be <= to
+      if (data.from && data.to) {
+        return data.from <= data.to;
+      }
+      return true;
+    },
+    {
+      message: "from date must be less than or equal to to date",
+      path: ["from"],
+    }
+  );
 
 /**
  * Type derived from the ListExpensesQuerySchema for use in the service layer.
@@ -291,7 +306,7 @@ export type ListExpensesQuery = z.infer<typeof ListExpensesQuerySchema>;
  * Zod schema for validating the request body of the Update Stash Name endpoint.
  */
 export const UpdateStashNameDto = z.object({
-  name: z.string().min(1, 'Name cannot be empty.').max(100, 'Name cannot exceed 100 characters.'),
+  name: z.string().min(1, "Name cannot be empty.").max(100, "Name cannot exceed 100 characters."),
 });
 
 /**

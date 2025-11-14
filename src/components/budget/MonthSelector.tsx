@@ -15,21 +15,21 @@ export function MonthSelector({ value, onChange, disabled = false }: MonthSelect
   const generateMonthOptions = () => {
     const options: { value: string; label: string }[] = [];
     const today = new Date();
-    
+
     // Start from 12 months ago
     for (let i = -12; i <= 12; i++) {
       const date = new Date(today.getFullYear(), today.getMonth() + i, 1);
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, "0");
       const yearMonth = `${year}-${month}`;
-      
+
       // Format as "Month YYYY"
-      const monthName = date.toLocaleDateString('en-US', { month: 'long' });
+      const monthName = date.toLocaleDateString("en-US", { month: "long" });
       const label = `${monthName} ${year}`;
-      
+
       options.push({ value: yearMonth, label });
     }
-    
+
     return options;
   };
 

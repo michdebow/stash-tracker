@@ -1,11 +1,19 @@
 import type { SupabaseClient } from "@/db/supabase.client";
-import type { ListStashesQuery, StashListItemDTO, ApiPaginatedResponse, Stash, CreateStashCommand, StashDetailsDTO, StashTransactionDTO, DeleteStashCommand } from "@/types";
+import type {
+  ListStashesQuery,
+  StashListItemDTO,
+  ApiPaginatedResponse,
+  Stash,
+  CreateStashCommand,
+  StashDetailsDTO,
+  DeleteStashCommand,
+} from "@/types";
 
 /**
  * Custom error class for duplicate stash names
  */
 export class DuplicateStashError extends Error {
-  constructor(message: string = "A stash with this name already exists") {
+  constructor(message = "A stash with this name already exists") {
     super(message);
     this.name = "DuplicateStashError";
   }
@@ -15,7 +23,7 @@ export class DuplicateStashError extends Error {
  * Custom error class for stash not found
  */
 export class StashNotFoundError extends Error {
-  constructor(message: string = "Stash not found") {
+  constructor(message = "Stash not found") {
     super(message);
     this.name = "StashNotFoundError";
   }
@@ -25,7 +33,7 @@ export class StashNotFoundError extends Error {
  * Custom error class for database constraint violations
  */
 export class DatabaseConstraintError extends Error {
-  constructor(message: string = "Database constraint violation prevents this operation") {
+  constructor(message = "Database constraint violation prevents this operation") {
     super(message);
     this.name = "DatabaseConstraintError";
   }
@@ -33,7 +41,7 @@ export class DatabaseConstraintError extends Error {
 
 /**
  * Creates a new stash for a user after checking for duplicates.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param data - The stash creation data containing the name
@@ -41,11 +49,7 @@ export class DatabaseConstraintError extends Error {
  * @throws DuplicateStashError if a stash with the same name already exists
  * @throws Error if the database operation fails
  */
-export async function createStash(
-  supabase: SupabaseClient,
-  userId: string,
-  data: CreateStashCommand
-): Promise<Stash> {
+export async function createStash(supabase: SupabaseClient, userId: string, data: CreateStashCommand): Promise<Stash> {
   // Check for duplicate stash name for this user
   const { data: existingStash, error: checkError } = await supabase
     .from("stashes")
@@ -88,7 +92,7 @@ export async function createStash(
 
 /**
  * Retrieves a paginated and sortable list of active stashes for a user.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param query - Query parameters for pagination and sorting
@@ -139,7 +143,7 @@ export async function listStashes(
 
 /**
  * Retrieves detailed information for a specific stash with optional transactions.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param stashId - The unique identifier of the stash to retrieve
@@ -152,7 +156,7 @@ export async function getStashDetails(
   supabase: SupabaseClient,
   userId: string,
   stashId: string,
-  includeTransactions: boolean = false
+  includeTransactions = false
 ): Promise<StashDetailsDTO> {
   // Fetch the stash
   const { data: stash, error: stashError } = await supabase
@@ -205,7 +209,7 @@ export async function getStashDetails(
 
 /**
  * Updates the name of an existing stash after validating ownership and checking for duplicates.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param stashId - The unique identifier of the stash to update
@@ -286,17 +290,14 @@ export async function updateStashName(
 /**
  * Soft-deletes a stash by setting its deleted_at timestamp.
  * Only the owner of the stash can delete it.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param command - Command containing stashId and userId for authorization
  * @throws StashNotFoundError if the stash is not found or doesn't belong to the user
  * @throws DatabaseConstraintError if a database constraint prevents deletion
  * @throws Error if the database operation fails
  */
-export async function deleteStash(
-  supabase: SupabaseClient,
-  command: DeleteStashCommand
-): Promise<void> {
+export async function deleteStash(supabase: SupabaseClient, command: DeleteStashCommand): Promise<void> {
   const { stashId, userId } = command;
 
   // Perform soft delete by updating deleted_at timestamp
@@ -313,13 +314,13 @@ export async function deleteStash(
 
   if (error) {
     console.error("Error deleting stash:", error);
-    
+
     // Check for constraint violation errors (e.g., foreign key constraints, triggers)
     // PostgreSQL error codes: 23000-23999 are integrity constraint violations
     if (error.code && error.code.startsWith("23")) {
       throw new DatabaseConstraintError("Cannot delete stash due to existing dependencies");
     }
-    
+
     throw new Error("Failed to delete stash");
   }
 

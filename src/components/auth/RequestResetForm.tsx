@@ -16,10 +16,10 @@ const requestResetFormSchema = z.object({
 
 export type RequestResetFormValues = z.infer<typeof requestResetFormSchema>;
 
-type FormMessage = {
+interface FormMessage {
   type: "success" | "error";
   text: string;
-};
+}
 
 export function RequestResetForm() {
   const form = useForm<RequestResetFormValues>({
@@ -87,7 +87,8 @@ export function RequestResetForm() {
       <CardHeader className="space-y-3 text-center">
         <CardTitle>Reset your password</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Enter the email address associated with your account and we&apos;ll send you instructions to reset your password.
+          Enter the email address associated with your account and we&apos;ll send you instructions to reset your
+          password.
         </p>
       </CardHeader>
 
@@ -95,7 +96,9 @@ export function RequestResetForm() {
         {formMessage?.type === "error" && (
           <Alert variant="destructive" className="border border-destructive/40 bg-destructive/10">
             <MailWarning className="size-4" aria-hidden="true" />
-            <AlertDescription className="pl-6 text-sm font-medium text-destructive">{formMessage.text}</AlertDescription>
+            <AlertDescription className="pl-6 text-sm font-medium text-destructive">
+              {formMessage.text}
+            </AlertDescription>
           </Alert>
         )}
 

@@ -29,7 +29,6 @@ try {
   if (error instanceof StashNotFoundError) {
     return Astro.redirect("/404");
   }
-  console.error("Error fetching stash details:", error);
   return Astro.redirect("/app/stashes");
 }
 
@@ -37,9 +36,5 @@ const pageTitle = `${initialStashData.name} - StashTracker`;
 ---
 
 <AppLayout title={pageTitle}>
-  <StashDetailView 
-    client:load 
-    initialStashData={initialStashData} 
-    stashId={id} 
-  />
+  <StashDetailView client:load initialStashData={initialStashData} stashId={id} />
 </AppLayout>

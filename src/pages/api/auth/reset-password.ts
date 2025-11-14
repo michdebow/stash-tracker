@@ -68,7 +68,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
       const status = "status" in updateError ? (updateError.status as number) : 500;
 
       let errorMessage: string;
-      if (updateError.message?.toLowerCase().includes("expired") || updateError.message?.toLowerCase().includes("invalid")) {
+      if (
+        updateError.message?.toLowerCase().includes("expired") ||
+        updateError.message?.toLowerCase().includes("invalid")
+      ) {
         errorMessage = "This password reset link is invalid or has expired. Please request a new one.";
       } else if (status >= 500) {
         errorMessage = "We couldn't update your password right now. Please try again later.";

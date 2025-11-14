@@ -20,13 +20,7 @@ interface RenameStashDialogProps {
   onSuccess?: () => void;
 }
 
-export function RenameStashDialog({
-  stashId,
-  currentName,
-  open,
-  onOpenChange,
-  onSuccess,
-}: RenameStashDialogProps) {
+export function RenameStashDialog({ stashId, currentName, open, onOpenChange, onSuccess }: RenameStashDialogProps) {
   const [name, setName] = useState(currentName);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -60,6 +54,7 @@ export function RenameStashDialog({
     setIsSubmitting(true);
     setError(null);
 
+    //prettier-ignore
     try {
       const response = await fetch(`/api/stashes/${stashId}`, {
         method: "PATCH",
@@ -95,7 +90,9 @@ export function RenameStashDialog({
         // Refresh the page to show the updated stash
         window.location.reload();
       }
-    } catch (err) {
+    }
+     
+    catch (err) {
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -108,9 +105,7 @@ export function RenameStashDialog({
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Rename Stash</DialogTitle>
-            <DialogDescription>
-              Enter a new name for your stash.
-            </DialogDescription>
+            <DialogDescription>Enter a new name for your stash.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             {error && (
@@ -133,18 +128,11 @@ export function RenameStashDialog({
                 autoFocus
                 required
               />
-              <p className="text-xs text-muted-foreground">
-                {name.length}/100 characters
-              </p>
+              <p className="text-xs text-muted-foreground">{name.length}/100 characters</p>
             </div>
           </div>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isSubmitting}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting || !name.trim()}>

@@ -33,7 +33,7 @@ describe("Button", () => {
     render(
       <Button asChild>
         <a href="/docs">Read docs</a>
-      </Button>,
+      </Button>
     );
 
     const link = screen.getByRole("link", { name: "Read docs" });

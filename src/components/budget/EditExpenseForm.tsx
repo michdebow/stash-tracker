@@ -3,13 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { ExpenseCategoryDTO, ExpenseListItemDTO } from "@/types";
 
 interface EditExpenseFormProps {
@@ -79,7 +73,7 @@ export function EditExpenseForm({ expense, onSuccess, onCancel }: EditExpenseFor
 
       // Build update payload with only changed fields
       const updates: Record<string, unknown> = {};
-      
+
       if (categoryId !== (expense.category_id || "")) {
         // If categoryId is empty string, we want to clear it (set to null)
         // Otherwise, send the category ID
@@ -126,11 +120,7 @@ export function EditExpenseForm({ expense, onSuccess, onCancel }: EditExpenseFor
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-          {error}
-        </div>
-      )}
+      {error && <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>}
 
       <div className="space-y-2">
         <Label htmlFor="edit-description">Description *</Label>

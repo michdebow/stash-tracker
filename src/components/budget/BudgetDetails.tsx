@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { MonthBudgetDTO, ErrorResponse } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert } from "@/components/ui/alert";
@@ -35,7 +35,7 @@ export function BudgetDetails({ yearMonth, refreshTrigger = 0 }: BudgetDetailsPr
   };
 
   // Fetch budget details
-  const fetchBudget = async () => {
+  const fetchBudget = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -67,12 +67,12 @@ export function BudgetDetails({ yearMonth, refreshTrigger = 0 }: BudgetDetailsPr
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [yearMonth]);
 
   // Fetch on mount and when yearMonth or refreshTrigger changes
   useEffect(() => {
     fetchBudget();
-  }, [yearMonth, refreshTrigger]);
+  }, [refreshTrigger, fetchBudget]);
 
   const handleRetry = () => {
     fetchBudget();
@@ -157,7 +157,7 @@ export function BudgetDetails({ yearMonth, refreshTrigger = 0 }: BudgetDetailsPr
             {percentageSpent > 100 && (
               <Alert variant="destructive">
                 <p className="text-sm font-medium">
-                  ⚠️ You've exceeded your budget by {formatCurrency(Math.abs(remainingBudget))}
+                  ⚠️ You have exceeded your budget by {formatCurrency(Math.abs(remainingBudget))}
                 </p>
               </Alert>
             )}
@@ -166,7 +166,7 @@ export function BudgetDetails({ yearMonth, refreshTrigger = 0 }: BudgetDetailsPr
             {percentageSpent > 80 && percentageSpent <= 100 && (
               <Alert className="bg-yellow-50 dark:bg-yellow-950 border-yellow-200 dark:border-yellow-800">
                 <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-                  ⚠️ You've used {percentageSpent.toFixed(1)}% of your budget
+                  ⚠️ You have used {percentageSpent.toFixed(1)}% of your budget
                 </p>
               </Alert>
             )}

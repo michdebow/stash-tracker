@@ -1,12 +1,12 @@
-import { CheckCircle2, Circle } from "lucide-react"
+import { CheckCircle2, Circle } from "lucide-react";
 
-import type { PasswordRequirementDisplay } from "@/components/auth/hooks/usePasswordStrength"
-import { cn } from "@/lib/utils"
+import type { PasswordRequirementDisplay } from "@/components/auth/hooks/usePasswordStrength";
+import { cn } from "@/lib/utils";
 
 interface PasswordRequirementListProps {
-  requirements: PasswordRequirementDisplay[]
-  className?: string
-  describedById?: string
+  requirements: PasswordRequirementDisplay[];
+  className?: string;
+  describedById?: string;
 }
 
 export function PasswordRequirementList({ requirements, className, describedById }: PasswordRequirementListProps) {
@@ -18,7 +18,7 @@ export function PasswordRequirementList({ requirements, className, describedById
 
       <ul className="space-y-1 text-sm" aria-describedby={describedById}>
         {requirements.map((requirement) => {
-          const Icon = requirement.isMet ? CheckCircle2 : Circle
+          const Icon = requirement.isMet ? CheckCircle2 : Circle;
 
           return (
             <li key={requirement.id} className="flex items-center gap-2 text-muted-foreground">
@@ -31,9 +31,9 @@ export function PasswordRequirementList({ requirements, className, describedById
               />
               <span className={requirement.isMet ? "text-foreground" : undefined}>{requirement.label}</span>
             </li>
-          )
+          );
         })}
       </ul>
     </div>
-  )
+  );
 }

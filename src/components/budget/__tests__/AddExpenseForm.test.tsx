@@ -29,7 +29,7 @@ describe("AddExpenseForm", () => {
       .mockResolvedValueOnce(
         createFetchResponse({
           data: [],
-        }),
+        })
       )
       .mockResolvedValueOnce(createFetchResponse({}));
 

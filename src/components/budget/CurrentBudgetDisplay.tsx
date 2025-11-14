@@ -13,9 +13,9 @@ interface CurrentBudgetDisplayProps {
 export function CurrentBudgetDisplay({ budget, isLoading }: CurrentBudgetDisplayProps) {
   // Format currency in PLN
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
+    return new Intl.NumberFormat("pl-PL", {
+      style: "currency",
+      currency: "PLN",
     }).format(amount);
   };
 
@@ -44,18 +44,15 @@ export function CurrentBudgetDisplay({ budget, isLoading }: CurrentBudgetDisplay
           <CardTitle className="text-base">Current Budget</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            No budget set for this month
-          </p>
+          <p className="text-sm text-muted-foreground">No budget set for this month</p>
         </CardContent>
       </Card>
     );
   }
 
   // Determine balance color
-  const balanceColor = budget.current_balance >= 0 
-    ? 'text-green-600 dark:text-green-400' 
-    : 'text-red-600 dark:text-red-400';
+  const balanceColor =
+    budget.current_balance >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400";
 
   return (
     <Card>
@@ -65,23 +62,17 @@ export function CurrentBudgetDisplay({ budget, isLoading }: CurrentBudgetDisplay
       <CardContent className="space-y-3">
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Budget Amount:</span>
-          <span className="text-sm font-semibold">
-            {formatCurrency(budget.budget_set)}
-          </span>
+          <span className="text-sm font-semibold">{formatCurrency(budget.budget_set)}</span>
         </div>
-        
+
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Remaining Balance:</span>
-          <span className={`text-sm font-semibold ${balanceColor}`}>
-            {formatCurrency(budget.current_balance)}
-          </span>
+          <span className={`text-sm font-semibold ${balanceColor}`}>{formatCurrency(budget.current_balance)}</span>
         </div>
 
         {budget.current_balance < 0 && (
           <div className="mt-2 p-2 bg-destructive/10 rounded-md">
-            <p className="text-xs text-destructive">
-              ⚠️ You've exceeded your budget
-            </p>
+            <p className="text-xs text-destructive">⚠️ You've exceeded your budget</p>
           </div>
         )}
       </CardContent>

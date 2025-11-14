@@ -1,7 +1,7 @@
-export type ApiResponse<T> = {
+export interface ApiResponse<T> {
   status: number;
   body: T;
-};
+}
 
 export async function apiPost<T>(
   baseUrl: string,

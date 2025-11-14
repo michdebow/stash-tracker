@@ -22,24 +22,22 @@ if (!user) {
       <div class="container mx-auto px-4 py-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-6">
-            <a href="/app/dashboard" class="text-xl font-bold">
-              StashTracker
-            </a>
+            <a href="/app/dashboard" class="text-xl font-bold"> StashTracker </a>
             <nav class="flex gap-4">
-              <a 
-                href="/app/dashboard" 
+              <a
+                href="/app/dashboard"
                 class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Dashboard
               </a>
-              <a 
-                href="/app/stashes" 
+              <a
+                href="/app/stashes"
                 class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Stashes
               </a>
-              <a 
-                href="/app/budget" 
+              <a
+                href="/app/budget"
                 class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Budget
@@ -49,7 +47,7 @@ if (!user) {
           <div class="flex items-center gap-4">
             <span class="text-sm text-muted-foreground">{user.email}</span>
             <form action="/api/auth/logout" method="POST">
-              <button 
+              <button
                 type="submit"
                 class="rounded-md bg-destructive px-3 py-1.5 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 transition-colors"
               >

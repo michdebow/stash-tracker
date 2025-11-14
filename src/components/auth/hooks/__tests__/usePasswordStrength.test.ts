@@ -1,10 +1,7 @@
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import {
-  passwordRequirementLabels,
-  usePasswordStrength,
-} from "../usePasswordStrength";
+import { passwordRequirementLabels, usePasswordStrength } from "../usePasswordStrength";
 
 describe("usePasswordStrength", () => {
   it("marks all requirements unmet for an empty password", () => {
@@ -23,12 +20,9 @@ describe("usePasswordStrength", () => {
   });
 
   it("returns fair strength when only length requirement is met", () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => usePasswordStrength(value),
-      {
-        initialProps: { value: "" },
-      },
-    );
+    const { result, rerender } = renderHook(({ value }) => usePasswordStrength(value), {
+      initialProps: { value: "" },
+    });
 
     rerender({ value: "abcdef" });
 
@@ -43,12 +37,9 @@ describe("usePasswordStrength", () => {
   });
 
   it("returns strong strength when all requirements are satisfied", () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => usePasswordStrength(value),
-      {
-        initialProps: { value: "" },
-      },
-    );
+    const { result, rerender } = renderHook(({ value }) => usePasswordStrength(value), {
+      initialProps: { value: "" },
+    });
 
     rerender({ value: "abcdef$" });
 

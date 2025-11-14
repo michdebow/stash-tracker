@@ -76,7 +76,9 @@ export function ResetPasswordForm() {
         if (!response.ok) {
           const errorData = await response.json();
           setHasRecoverySession(false);
-          setErrorMessage(errorData.message || "This password reset link is invalid or has expired. Please request a new one.");
+          setErrorMessage(
+            errorData.message || "This password reset link is invalid or has expired. Please request a new one."
+          );
           return;
         }
 

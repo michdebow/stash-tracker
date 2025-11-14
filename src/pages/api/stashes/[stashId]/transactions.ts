@@ -2,7 +2,12 @@ import type { APIRoute } from "astro";
 import { z } from "zod";
 import { ListTransactionsQuerySchema } from "@/types";
 import type { ErrorResponse, ValidationErrorResponse, CreateStashTransactionCommand } from "@/types";
-import { listStashTransactions, createTransaction, StashNotFoundError, InsufficientBalanceError } from "@/lib/services/transaction.service";
+import {
+  listStashTransactions,
+  createTransaction,
+  StashNotFoundError,
+  InsufficientBalanceError,
+} from "@/lib/services/transaction.service";
 
 export const prerender = false;
 
@@ -13,20 +18,20 @@ const StashIdParamSchema = z.string().uuid("Invalid stash ID format");
 
 /**
  * Zod schema for validating the request body when creating a transaction
- * 
+ *
  * Validation rules:
  * - transaction_type: Must be either 'deposit' or 'withdrawal'
  * - amount: Must be a positive number (database stores as numeric(12,2))
  * - description: Optional text field for transaction notes
  */
 const CreateTransactionDto = z.object({
-  transaction_type: z.enum(['deposit', 'withdrawal'], {
-    errorMap: () => ({ message: "Transaction type must be either 'deposit' or 'withdrawal'" })
+  transaction_type: z.enum(["deposit", "withdrawal"], {
+    errorMap: () => ({ message: "Transaction type must be either 'deposit' or 'withdrawal'" }),
   }),
   amount: z
     .number({
       required_error: "Amount is required",
-      invalid_type_error: "Amount must be a number"
+      invalid_type_error: "Amount must be a number",
     })
     .positive("Amount must be greater than zero")
     .finite("Amount must be a finite number"),
@@ -36,10 +41,10 @@ const CreateTransactionDto = z.object({
 /**
  * GET /api/stashes/{stashId}/transactions
  * Retrieves a paginated and filterable list of transactions for a specific stash.
- * 
+ *
  * Path Parameters:
  * - stashId: string (UUID) - The unique identifier of the stash
- * 
+ *
  * Query Parameters:
  * - page: number (default: 1) - The page number to retrieve
  * - limit: number (default: 20, max: 100) - The number of items per page
@@ -47,7 +52,7 @@ const CreateTransactionDto = z.object({
  * - from: string (ISO 8601, optional) - Start date for filtering (inclusive)
  * - to: string (ISO 8601, optional) - End date for filtering (inclusive)
  * - order: 'asc' | 'desc' (default: 'desc') - Sort order by created_at
- * 
+ *
  * Returns:
  * - 200: Paginated list of transactions
  * - 400: Invalid path or query parameters
@@ -170,15 +175,15 @@ export const GET: APIRoute = async ({ params, url, locals }) => {
 /**
  * POST /api/stashes/{stashId}/transactions
  * Creates a new transaction (deposit or withdrawal) for a specific stash.
- * 
+ *
  * Path Parameters:
  * - stashId: string (UUID) - The unique identifier of the stash
- * 
+ *
  * Request Body:
  * - transaction_type: 'deposit' | 'withdrawal' (required) - The type of transaction
  * - amount: number (required) - The transaction amount (must be positive)
  * - description: string (optional) - An optional note for the transaction
- * 
+ *
  * Returns:
  * - 201: Transaction created successfully
  * - 400: Invalid path parameter or request body

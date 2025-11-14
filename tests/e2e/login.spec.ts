@@ -2,7 +2,6 @@ import { test, expect } from "@playwright/test";
 
 import { LoginPage } from "./pages/LoginPage";
 import { testUsers } from "./fixtures/testUsers";
-import { apiPost } from "./utils/apiClient";
 
 test.describe("Login", () => {
   test.use({ viewport: { width: 1280, height: 720 } });
@@ -12,7 +11,7 @@ test.describe("Login", () => {
     await loginPage.goto();
   });
 
-  test("successful login redirects to dashboard", async ({ page, request, baseURL }) => {
+  test("successful login redirects to dashboard", async ({ page, baseURL }) => {
     if (!baseURL) {
       throw new Error("baseURL is not configured in Playwright. Set PLAYWRIGHT_BASE_URL or baseURL in config.");
     }

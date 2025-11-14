@@ -17,10 +17,12 @@ interface StashDetailViewProps {
  * Manages data refresh coordination between child components
  */
 export function StashDetailView({ initialStashData, stashId }: StashDetailViewProps) {
-  const { stash, isLoading: isLoadingStash, error: stashError, refreshData: refreshStash } = useStashDetail(
-    stashId,
-    initialStashData
-  );
+  const {
+    stash,
+    isLoading: isLoadingStash,
+    error: stashError,
+    refreshData: refreshStash,
+  } = useStashDetail(stashId, initialStashData);
 
   const {
     transactions,
@@ -44,9 +46,7 @@ export function StashDetailView({ initialStashData, stashId }: StashDetailViewPr
     return (
       <div className="max-w-4xl mx-auto">
         <Alert variant="destructive">
-          <AlertDescription>
-            {stashError.message || "Failed to load stash details. Please try again."}
-          </AlertDescription>
+          <AlertDescription>{stashError.message || "Failed to load stash details. Please try again."}</AlertDescription>
         </Alert>
       </div>
     );
@@ -67,7 +67,7 @@ export function StashDetailView({ initialStashData, stashId }: StashDetailViewPr
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <StashDetailHeader stash={stash} onTransactionSuccess={handleDataRefresh} />
-      
+
       <TransactionList
         stashId={stashId}
         transactions={transactions}

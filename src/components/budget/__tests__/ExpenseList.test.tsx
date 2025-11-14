@@ -8,10 +8,7 @@ vi.mock("../EditExpenseForm", () => ({
   EditExpenseForm: () => <div data-testid="edit-expense-form" />,
 }));
 
-const createFetchResponse = <T,>(
-  payload: T,
-  init: { ok?: boolean; status?: number } = {},
-) => ({
+const createFetchResponse = <T,>(payload: T, init: { ok?: boolean; status?: number } = {}) => ({
   ok: init.ok ?? true,
   status: init.status ?? 200,
   json: async () => payload,
@@ -74,24 +71,15 @@ describe("ExpenseList", () => {
 
     await screen.findByText("0 expenses this month");
 
-    expect(
-      screen.getByText("No expenses recorded for this month."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("No expenses recorded for this month.")).toBeInTheDocument();
   });
 
   it("renders an error message when the expenses request fails", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     fetchMock
       .mockResolvedValueOnce(createFetchResponse({ data: [] }))
-      .mockResolvedValueOnce(
-        createFetchResponse(
-          { message: "Backend unavailable" },
-          { ok: false, status: 500 },
-        ),
-      );
+      .mockResolvedValueOnce(createFetchResponse({ message: "Backend unavailable" }, { ok: false, status: 500 }));
 
     render(<ExpenseList yearMonth="2025-01" refreshTrigger={0} />);
 

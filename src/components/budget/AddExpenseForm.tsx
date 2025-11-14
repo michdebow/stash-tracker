@@ -3,13 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { ExpenseCategoryDTO } from "@/types";
 
 interface AddExpenseFormProps {
@@ -119,11 +113,7 @@ export function AddExpenseForm({ yearMonth, onSuccess }: AddExpenseFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-      {error && (
-        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-          {error}
-        </div>
-      )}
+      {error && <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>}
 
       <div className="space-y-2">
         <Label htmlFor="description">Description *</Label>
@@ -168,11 +158,7 @@ export function AddExpenseForm({ yearMonth, onSuccess }: AddExpenseFormProps) {
 
       <div className="space-y-2">
         <Label htmlFor="category">Category</Label>
-        <Select
-          value={categoryId}
-          onValueChange={setCategoryId}
-          disabled={isLoadingCategories || isSubmitting}
-        >
+        <Select value={categoryId} onValueChange={setCategoryId} disabled={isLoadingCategories || isSubmitting}>
           <SelectTrigger id="category">
             <SelectValue placeholder="Select a category (optional)" />
           </SelectTrigger>

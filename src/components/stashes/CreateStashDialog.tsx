@@ -56,7 +56,7 @@ export function CreateStashDialog({ onSuccess, trigger }: CreateStashDialogProps
         }
 
         const errorData = await response.json();
-        
+
         if (errorData.errors?.name) {
           setError(errorData.errors.name[0]);
         } else {
@@ -68,7 +68,7 @@ export function CreateStashDialog({ onSuccess, trigger }: CreateStashDialogProps
       // Success - close dialog and reset form
       setName("");
       setOpen(false);
-      
+
       // Call onSuccess callback if provided
       if (onSuccess) {
         onSuccess();
@@ -121,9 +121,7 @@ export function CreateStashDialog({ onSuccess, trigger }: CreateStashDialogProps
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Create New Stash</DialogTitle>
-            <DialogDescription>
-              Enter a name for your new savings stash. You can change it later.
-            </DialogDescription>
+            <DialogDescription>Enter a name for your new savings stash. You can change it later.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             {error && (
@@ -146,18 +144,11 @@ export function CreateStashDialog({ onSuccess, trigger }: CreateStashDialogProps
                 autoFocus
                 required
               />
-              <p className="text-xs text-muted-foreground">
-                {name.length}/100 characters
-              </p>
+              <p className="text-xs text-muted-foreground">{name.length}/100 characters</p>
             </div>
           </div>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-              disabled={isSubmitting}
-            >
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isSubmitting}>
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting || !name.trim()}>

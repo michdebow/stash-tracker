@@ -5,12 +5,12 @@ export const prerender = false;
 
 /**
  * GET /api/dashboard
- * 
+ *
  * Retrieves dashboard data including stashes summary and current month's budget.
- * 
+ *
  * Query Parameters:
  * - yearMonth (optional): Year-month in YYYY-MM format (defaults to current month)
- * 
+ *
  * Response:
  * - 200: Dashboard data with stashes and budget summaries
  * - 401: User not authenticated
@@ -34,9 +34,9 @@ export const GET: APIRoute = async ({ locals, url }) => {
     // Validate yearMonth format if provided
     if (yearMonth && !/^\d{4}-\d{2}$/.test(yearMonth)) {
       return new Response(
-        JSON.stringify({ 
-          error: "Invalid year-month format", 
-          message: "yearMonth must be in YYYY-MM format" 
+        JSON.stringify({
+          error: "Invalid year-month format",
+          message: "yearMonth must be in YYYY-MM format",
         }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
@@ -52,9 +52,9 @@ export const GET: APIRoute = async ({ locals, url }) => {
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
     return new Response(
-      JSON.stringify({ 
-        error: "Internal server error", 
-        message: "Failed to fetch dashboard data" 
+      JSON.stringify({
+        error: "Internal server error",
+        message: "Failed to fetch dashboard data",
       }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );

@@ -1,12 +1,18 @@
 import type { SupabaseClient } from "@/db/supabase.client";
-import type { ListExpensesQuery, ExpenseListItemDTO, ApiPaginatedResponse, CreateExpenseCommand, UpdateExpenseCommand } from "@/types";
+import type {
+  ListExpensesQuery,
+  ExpenseListItemDTO,
+  ApiPaginatedResponse,
+  CreateExpenseCommand,
+  UpdateExpenseCommand,
+} from "@/types";
 
 /**
  * Custom error thrown when a referenced expense category does not exist.
  */
 export class CategoryNotFoundError extends Error {
   name = "CategoryNotFoundError";
-  
+
   constructor(message = "Expense category not found") {
     super(message);
   }
@@ -17,7 +23,7 @@ export class CategoryNotFoundError extends Error {
  */
 export class ExpenseNotFoundError extends Error {
   name = "ExpenseNotFoundError";
-  
+
   constructor(message = "Expense not found") {
     super(message);
   }
@@ -25,7 +31,7 @@ export class ExpenseNotFoundError extends Error {
 
 /**
  * Retrieves a paginated and filterable list of expenses for a user.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param query - Query parameters for pagination, filtering, and sorting
@@ -101,7 +107,7 @@ export async function listExpenses(
 
 /**
  * Creates a new expense for a user.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param command - The expense creation command containing amount, expense_date, description, and optional category_id
@@ -172,7 +178,7 @@ export async function createExpense(
 /**
  * Updates an existing expense for a user.
  * Allows partial updates of category_id, amount, expense_date, and description.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param expenseId - The ID of the expense to update
@@ -207,7 +213,7 @@ export async function updateExpense(
 
   // Build the updates object with only provided fields
   const updates: Record<string, unknown> = {};
-  
+
   if (command.category_id !== undefined) {
     updates.category_id = command.category_id;
   }
@@ -263,7 +269,7 @@ export async function updateExpense(
 /**
  * Soft-deletes an expense for a user by setting the deleted_at timestamp.
  * The database trigger will automatically recalculate the month_budget.current_balance.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param expenseId - The ID of the expense to delete
@@ -271,11 +277,7 @@ export async function updateExpense(
  * @throws ExpenseNotFoundError if the expense does not exist, doesn't belong to the user, or is already deleted
  * @throws Error if the database operation fails
  */
-export async function softDeleteExpense(
-  supabase: SupabaseClient,
-  userId: string,
-  expenseId: string
-): Promise<void> {
+export async function softDeleteExpense(supabase: SupabaseClient, userId: string, expenseId: string): Promise<void> {
   const { data, error } = await supabase
     .from("expenses")
     .update({ deleted_at: new Date().toISOString() })
@@ -292,12 +294,12 @@ export async function softDeleteExpense(
       code: error.code,
       message: error.message,
     });
-    
+
     // Handle PGRST116 error (no rows returned) as expense not found
     if (error.code === "PGRST116") {
       throw new ExpenseNotFoundError();
     }
-    
+
     throw new Error("Failed to delete expense");
   }
 

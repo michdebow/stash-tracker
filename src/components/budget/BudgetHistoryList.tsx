@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { MonthBudgetListItemDTO, ApiPaginatedResponse, ErrorResponse } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,53 +26,56 @@ export function BudgetHistoryList({ refreshTrigger = 0 }: BudgetHistoryListProps
   const totalPages = Math.ceil(totalItems / limit);
 
   // Fetch budget list
-  const fetchBudgets = async (page: number) => {
-    setIsLoading(true);
-    setError(null);
+  const fetchBudgets = useCallback(
+    async (page: number) => {
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-        order: 'desc',
-      });
+      try {
+        const params = new URLSearchParams({
+          page: page.toString(),
+          limit: limit.toString(),
+          order: "desc",
+        });
 
-      const response = await fetch(`/api/month-budgets?${params.toString()}`);
+        const response = await fetch(`/api/month-budgets?${params.toString()}`);
 
-      if (response.status === 401) {
-        window.location.href = "/login";
-        return;
+        if (response.status === 401) {
+          window.location.href = "/login";
+          return;
+        }
+
+        if (!response.ok) {
+          const errorData = (await response.json()) as ErrorResponse;
+          setError(errorData.message || "Failed to fetch budget history");
+          return;
+        }
+
+        const data = (await response.json()) as ApiPaginatedResponse<MonthBudgetListItemDTO>;
+        setBudgets(data.data);
+        setTotalItems(data.pagination.total);
+        setCurrentPage(data.pagination.page);
+      } catch (err) {
+        console.error("Error fetching budgets:", err);
+        setError("Unable to connect. Please check your internet connection.");
+      } finally {
+        setIsLoading(false);
       }
-
-      if (!response.ok) {
-        const errorData = await response.json() as ErrorResponse;
-        setError(errorData.message || "Failed to fetch budget history");
-        return;
-      }
-
-      const data = await response.json() as ApiPaginatedResponse<MonthBudgetListItemDTO>;
-      setBudgets(data.data);
-      setTotalItems(data.pagination.total);
-      setCurrentPage(data.pagination.page);
-    } catch (err) {
-      console.error("Error fetching budgets:", err);
-      setError("Unable to connect. Please check your internet connection.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [limit]
+  );
 
   // Fetch on mount and when page changes
   useEffect(() => {
     fetchBudgets(currentPage);
-  }, [currentPage]);
+  }, [currentPage, fetchBudgets]);
 
   // Refresh when trigger changes
   useEffect(() => {
     if (refreshTrigger > 0) {
       fetchBudgets(currentPage);
     }
-  }, [refreshTrigger]);
+  }, [refreshTrigger, currentPage, fetchBudgets]);
 
   // Handle page navigation
   const handlePreviousPage = () => {
@@ -95,9 +98,7 @@ export function BudgetHistoryList({ refreshTrigger = 0 }: BudgetHistoryListProps
     <Card>
       <CardHeader>
         <CardTitle>Budget History</CardTitle>
-        <CardDescription>
-          View your past monthly budgets
-        </CardDescription>
+        <CardDescription>View your past monthly budgets</CardDescription>
       </CardHeader>
       <CardContent>
         {/* Loading State */}
@@ -126,12 +127,8 @@ export function BudgetHistoryList({ refreshTrigger = 0 }: BudgetHistoryListProps
         {/* Empty State */}
         {!isLoading && !error && budgets.length === 0 && (
           <div className="text-center py-8">
-            <p className="text-sm text-muted-foreground">
-              You haven't set any budgets yet.
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Start by setting a budget for the current month.
-            </p>
+            <p className="text-sm text-muted-foreground">You haven't set any budgets yet.</p>
+            <p className="text-sm text-muted-foreground mt-1">Start by setting a budget for the current month.</p>
           </div>
         )}
 

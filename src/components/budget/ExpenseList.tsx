@@ -12,13 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { EditExpenseForm } from "./EditExpenseForm";
 import type { ExpenseListItemDTO, ExpenseCategoryDTO } from "@/types";
 
@@ -279,8 +273,8 @@ export function ExpenseList({ yearMonth, refreshTrigger, onExpenseDeleted }: Exp
         </CardContent>
       </Card>
 
-      <Dialog 
-        open={!!editExpense} 
+      <Dialog
+        open={!!editExpense}
         onOpenChange={(open) => {
           if (!open) {
             handleEditCancel();
@@ -290,16 +284,10 @@ export function ExpenseList({ yearMonth, refreshTrigger, onExpenseDeleted }: Exp
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Edit Expense</DialogTitle>
-            <DialogDescription>
-              Update the details of your expense.
-            </DialogDescription>
+            <DialogDescription>Update the details of your expense.</DialogDescription>
           </DialogHeader>
           {editExpense && (
-            <EditExpenseForm
-              expense={editExpense}
-              onSuccess={handleEditSuccess}
-              onCancel={handleEditCancel}
-            />
+            <EditExpenseForm expense={editExpense} onSuccess={handleEditSuccess} onCancel={handleEditCancel} />
           )}
         </DialogContent>
       </Dialog>

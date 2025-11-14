@@ -88,11 +88,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
     }
 
     // Call service to get the budget
-    const budget = await getBudgetByYearMonth(
-      locals.supabase,
-      locals.user.id,
-      yearMonthValidation.data
-    );
+    const budget = await getBudgetByYearMonth(locals.supabase, locals.user.id, yearMonthValidation.data);
 
     if (!budget) {
       const errorResponse: ErrorResponse = {

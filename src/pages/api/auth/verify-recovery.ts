@@ -54,10 +54,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // If verifyOtp fails, try exchanging the code for a session directly
     if (error && error.message?.includes("invalid")) {
       console.log("Trying alternative verification method...");
-      
+
       // Try using the code as part of the URL to establish session
       const { data: sessionData, error: sessionError } = await locals.supabase.auth.exchangeCodeForSession(code);
-      
+
       if (sessionError) {
         console.error("Error exchanging code for session:", sessionError);
 

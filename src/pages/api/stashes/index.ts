@@ -16,13 +16,13 @@ const CreateStashDto = z.object({
 /**
  * GET /api/stashes
  * Retrieves a paginated and sortable list of active stashes for the authenticated user.
- * 
+ *
  * Query Parameters:
  * - page: number (default: 1) - The page number to retrieve
  * - limit: number (default: 20, max: 100) - The number of items per page
  * - sort: 'created_at' | 'name' (default: 'created_at') - The field to sort by
  * - order: 'asc' | 'desc' (default: 'desc') - The sort order
- * 
+ *
  * Returns:
  * - 200: Paginated list of stashes
  * - 400: Invalid query parameters
@@ -77,11 +77,7 @@ export const GET: APIRoute = async ({ url, locals }) => {
     }
 
     // Fetch stashes using the service
-    const result = await listStashes(
-      locals.supabase,
-      locals.user.id,
-      validation.data
-    );
+    const result = await listStashes(locals.supabase, locals.user.id, validation.data);
 
     // Return success response
     return new Response(JSON.stringify(result), {
@@ -106,10 +102,10 @@ export const GET: APIRoute = async ({ url, locals }) => {
 /**
  * POST /api/stashes
  * Creates a new stash for the authenticated user.
- * 
+ *
  * Request Body:
  * - name: string (required, 1-100 characters) - The name of the stash
- * 
+ *
  * Returns:
  * - 201: Successfully created stash
  * - 400: Invalid request body
@@ -174,11 +170,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Create the stash using the service
-    const newStash = await createStash(
-      locals.supabase,
-      locals.user.id,
-      validation.data
-    );
+    const newStash = await createStash(locals.supabase, locals.user.id, validation.data);
 
     // Map to DTO (exclude user_id and deleted_at)
     const stashDto: StashDTO = {

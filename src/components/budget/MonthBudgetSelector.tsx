@@ -40,16 +40,16 @@ export function MonthBudgetSelector({ value, onChange, disabled = false }: Month
         }
 
         if (!response.ok) {
-          const errorData = await response.json() as ErrorResponse;
+          const errorData = (await response.json()) as ErrorResponse;
           setError(errorData.message || "Failed to fetch available months");
           return;
         }
 
-        const data = await response.json() as ApiPaginatedResponse<MonthBudgetListItemDTO>;
+        const data = (await response.json()) as ApiPaginatedResponse<MonthBudgetListItemDTO>;
         setAvailableMonths(data.data);
-        
+
         // If current value is not in the list and there are budgets, select the first one
-        if (data.data.length > 0 && !data.data.some(b => b.year_month === value)) {
+        if (data.data.length > 0 && !data.data.some((b) => b.year_month === value)) {
           onChange(data.data[0].year_month);
         }
       } catch (err) {
@@ -61,7 +61,7 @@ export function MonthBudgetSelector({ value, onChange, disabled = false }: Month
     };
 
     fetchAvailableMonths();
-  }, []);
+  }, [value, onChange]);
 
   // Format year-month to readable label
   const formatMonthLabel = (yearMonth: string): string => {

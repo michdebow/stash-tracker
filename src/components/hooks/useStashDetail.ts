@@ -13,10 +13,7 @@ interface UseStashDetailReturn {
  * @param stashId - The unique identifier of the stash
  * @param initialData - Optional initial data to prevent loading state on first render
  */
-export function useStashDetail(
-  stashId: string,
-  initialData?: StashDetailsDTO
-): UseStashDetailReturn {
+export function useStashDetail(stashId: string, initialData?: StashDetailsDTO): UseStashDetailReturn {
   const [stash, setStash] = useState<StashDetailsDTO | null>(initialData || null);
   const [isLoading, setIsLoading] = useState(!initialData);
   const [error, setError] = useState<Error | null>(null);

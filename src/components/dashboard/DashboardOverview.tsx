@@ -20,13 +20,13 @@ export function DashboardOverview() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch("/api/dashboard");
-      
+
       if (!response.ok) {
         throw new Error("Failed to fetch dashboard data");
       }
-      
+
       const dashboardData = await response.json();
       setData(dashboardData);
     } catch (err) {
@@ -78,7 +78,7 @@ export function DashboardOverview() {
               <span className="text-sm font-medium text-muted-foreground">Total Balance</span>
               <span className="text-2xl font-bold">{formatCurrency(data.stashes.totalBalance)}</span>
             </div>
-            
+
             {data.stashes.stashes.length > 0 ? (
               <div className="mt-6 space-y-3">
                 <h4 className="text-sm font-semibold">Recent Stashes</h4>
@@ -91,10 +91,7 @@ export function DashboardOverview() {
                   ))}
                 </div>
                 {data.stashes.stashes.length > 5 && (
-                  <a 
-                    href="/app/stashes" 
-                    className="inline-block text-sm text-primary hover:underline mt-2"
-                  >
+                  <a href="/app/stashes" className="inline-block text-sm text-primary hover:underline mt-2">
                     View all stashes →
                   </a>
                 )}
@@ -102,8 +99,8 @@ export function DashboardOverview() {
             ) : (
               <div className="mt-6 text-center py-8">
                 <p className="text-sm text-muted-foreground mb-4">You don't have any stashes yet</p>
-                <a 
-                  href="/app/stashes" 
+                <a
+                  href="/app/stashes"
                   className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                   Create Your First Stash
@@ -117,9 +114,7 @@ export function DashboardOverview() {
         <Card>
           <CardHeader>
             <CardTitle>Budget</CardTitle>
-            <CardDescription>
-              {formatYearMonth(data.budget.yearMonth)} overview
-            </CardDescription>
+            <CardDescription>{formatYearMonth(data.budget.yearMonth)} overview</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {data.budget.hasNoBudget ? (
@@ -127,8 +122,8 @@ export function DashboardOverview() {
                 <p className="text-sm text-muted-foreground mb-4">
                   No budget set for {formatYearMonth(data.budget.yearMonth)}
                 </p>
-                <a 
-                  href="/app/budget" 
+                <a
+                  href="/app/budget"
                   className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                   Set Budget
@@ -138,7 +133,7 @@ export function DashboardOverview() {
               <>
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-muted-foreground">Budget Set</span>
-                  <span className="text-2xl font-bold">{formatCurrency(data.budget.budgetSet!)}</span>
+                  <span className="text-2xl font-bold">{formatCurrency(data.budget.budgetSet ?? 0)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-muted-foreground">Total Expenses</span>
@@ -148,14 +143,12 @@ export function DashboardOverview() {
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t">
                   <span className="text-sm font-medium text-muted-foreground">Remaining</span>
-                  <span 
+                  <span
                     className={`text-2xl font-bold ${
-                      (data.budget.currentBalance ?? 0) >= 0 
-                        ? "text-green-600 dark:text-green-400" 
-                        : "text-destructive"
+                      (data.budget.currentBalance ?? 0) >= 0 ? "text-green-600 dark:text-green-400" : "text-destructive"
                     }`}
                   >
-                    {formatCurrency(data.budget.currentBalance!)}
+                    {formatCurrency(data.budget.currentBalance ?? 0)}
                   </span>
                 </div>
 
@@ -164,29 +157,26 @@ export function DashboardOverview() {
                   <div className="flex items-center justify-between text-sm mb-2">
                     <span className="text-muted-foreground">Budget Usage</span>
                     <span className="font-medium">
-                      {calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet!)}%
+                      {calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet ?? 0)}%
                     </span>
                   </div>
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className={`h-full transition-all ${
-                        calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet!) > 100
+                        calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet ?? 0) > 100
                           ? "bg-destructive"
-                          : calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet!) > 80
-                          ? "bg-yellow-500"
-                          : "bg-primary"
+                          : calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet ?? 0) > 80
+                            ? "bg-yellow-500"
+                            : "bg-primary"
                       }`}
-                      style={{ 
-                        width: `${Math.min(calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet!), 100)}%` 
+                      style={{
+                        width: `${Math.min(calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet ?? 0), 100)}%`,
                       }}
                     />
                   </div>
                 </div>
 
-                <a 
-                  href="/app/budget" 
-                  className="inline-block text-sm text-primary hover:underline mt-4"
-                >
+                <a href="/app/budget" className="inline-block text-sm text-primary hover:underline mt-4">
                   View detailed budget →
                 </a>
               </>
@@ -227,12 +217,7 @@ export function DashboardOverview() {
                 stroke="currentColor"
                 aria-hidden="true"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               <span className="text-sm font-medium">Add Stash</span>
             </a>

@@ -22,11 +22,7 @@ interface UseStashTransactionsReturn {
  * @param initialPage - The initial page number (default: 1)
  * @param initialLimit - The number of items per page (default: 20)
  */
-export function useStashTransactions(
-  stashId: string,
-  initialPage: number = 1,
-  initialLimit: number = 20
-): UseStashTransactionsReturn {
+export function useStashTransactions(stashId: string, initialPage = 1, initialLimit = 20): UseStashTransactionsReturn {
   const [transactions, setTransactions] = useState<StashTransactionDTO[]>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     page: initialPage,

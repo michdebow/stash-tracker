@@ -41,9 +41,7 @@ export function AddTransactionDialog({
 
   const isDeposit = transactionType === "deposit";
   const dialogTitle = isDeposit ? "Add Funds" : "Withdraw Funds";
-  const dialogDescription = isDeposit
-    ? "Add money to your stash"
-    : "Withdraw money from your stash";
+  const dialogDescription = isDeposit ? "Add money to your stash" : "Withdraw money from your stash";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -173,7 +171,8 @@ export function AddTransactionDialog({
               )}
               {!isDeposit && currentBalance > 0 && (
                 <p className="text-xs text-muted-foreground">
-                  Available balance: {new Intl.NumberFormat("pl-PL", {
+                  Available balance:{" "}
+                  {new Intl.NumberFormat("pl-PL", {
                     style: "currency",
                     currency: "PLN",
                   }).format(currentBalance)}

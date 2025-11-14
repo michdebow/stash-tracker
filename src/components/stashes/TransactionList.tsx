@@ -50,9 +50,7 @@ export function TransactionList({
         {error && (
           <div className="p-4">
             <Alert variant="destructive">
-              <AlertDescription>
-                {error.message || "Failed to load transactions. Please try again."}
-              </AlertDescription>
+              <AlertDescription>{error.message || "Failed to load transactions. Please try again."}</AlertDescription>
             </Alert>
           </div>
         )}

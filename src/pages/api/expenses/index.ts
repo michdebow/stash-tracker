@@ -14,27 +14,21 @@ const CreateExpenseDto = z.object({
   amount: z
     .number()
     .positive("Amount must be greater than 0")
-    .refine(
-      (n) => Number.isInteger(n * 100),
-      "Amount must have at most 2 decimal places"
-    ),
+    .refine((n) => Number.isInteger(n * 100), "Amount must have at most 2 decimal places"),
   expense_date: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Use YYYY-MM-DD")
-    .refine(
-      (dateStr) => {
-        const date = new Date(dateStr);
-        return !isNaN(date.getTime()) && dateStr === date.toISOString().split("T")[0];
-      },
-      "Invalid date value"
-    ),
+    .refine((dateStr) => {
+      const date = new Date(dateStr);
+      return !isNaN(date.getTime()) && dateStr === date.toISOString().split("T")[0];
+    }, "Invalid date value"),
   description: z.string().trim().min(1, "Description is required").max(500, "Description cannot exceed 500 characters"),
 });
 
 /**
  * GET /api/expenses
  * Retrieves a paginated and filterable list of expenses for the authenticated user.
- * 
+ *
  * Query Parameters:
  * - page: number (default: 1) - The page number to retrieve
  * - limit: number (default: 20, max: 100) - The number of items per page
@@ -45,7 +39,7 @@ const CreateExpenseDto = z.object({
  * - search: string (1-200 chars) - Search in expense descriptions
  * - sort: 'expense_date' | 'amount' (default: 'expense_date') - The field to sort by
  * - order: 'asc' | 'desc' (default: 'desc') - The sort order
- * 
+ *
  * Returns:
  * - 200: Paginated list of expenses
  * - 400: Invalid query parameters
@@ -105,11 +99,7 @@ export const GET: APIRoute = async ({ url, locals }) => {
     }
 
     // Fetch expenses using the service
-    const result = await listExpenses(
-      locals.supabase,
-      locals.user.id,
-      validation.data
-    );
+    const result = await listExpenses(locals.supabase, locals.user.id, validation.data);
 
     // Return success response
     return new Response(JSON.stringify(result), {
@@ -134,13 +124,13 @@ export const GET: APIRoute = async ({ url, locals }) => {
 /**
  * POST /api/expenses
  * Creates a new expense for the authenticated user.
- * 
+ *
  * Request Body:
  * - description: string (required, max 500 chars) - What the expense was for
  * - amount: number (positive, max 2 decimal places) - The expense amount
  * - expense_date: string (YYYY-MM-DD) - The date of the expense
  * - category_id: string (UUID, optional) - The expense category ID
- * 
+ *
  * Returns:
  * - 201: Expense created successfully
  * - 400: Invalid request body or validation errors
@@ -166,9 +156,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Parse request body
     let body;
+
+    //prettier-ignore
     try {
       body = await request.json();
-    } catch (parseError) {
+    }
+     
+    catch (parseError) {
       const errorResponse: ErrorResponse = {
         error: "Bad Request",
         message: "Invalid JSON in request body.",
@@ -211,11 +205,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Create the expense using the service
-    const expense = await createExpense(
-      locals.supabase,
-      locals.user.id,
-      validation.data
-    );
+    const expense = await createExpense(locals.supabase, locals.user.id, validation.data);
 
     // Return success response
     return new Response(JSON.stringify({ data: expense }), {

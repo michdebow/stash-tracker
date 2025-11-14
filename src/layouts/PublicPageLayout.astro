@@ -6,20 +6,21 @@ interface Props {
   description?: string;
 }
 
-const {
-  title = "StashTracker",
-  description = "",
-} = Astro.props as Props;
+const { title = "StashTracker" } = Astro.props as Props;
 ---
 
 <Layout title={title}>
   <main class="min-h-svh bg-gradient-to-br from-background to-muted/40 text-foreground">
-    <div class="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-16 md:flex-row md:items-center md:justify-between md:gap-16">
-      {Astro.slots.has("hero") && (
-        <section class="max-w-xl space-y-4">
-          <slot name="hero" />
-        </section>
-      )}
+    <div
+      class="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-16 md:flex-row md:items-center md:justify-between md:gap-16"
+    >
+      {
+        Astro.slots.has("hero") && (
+          <section class="max-w-xl space-y-4">
+            <slot name="hero" />
+          </section>
+        )
+      }
 
       <section class="w-full max-w-md">
         <slot />

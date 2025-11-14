@@ -7,7 +7,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowUpCircle, ArrowDownCircle, MoreVertical, Trash2 } from "lucide-react";
 import { DeleteTransactionDialog } from "./DeleteTransactionDialog";
 
@@ -53,9 +52,7 @@ export function TransactionListItem({ transaction, stashId, onDeleteSuccess }: T
         <div className="flex items-start gap-3 flex-1">
           {/* Transaction type icon */}
           <div
-            className={`mt-1 ${
-              isDeposit ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
-            }`}
+            className={`mt-1 ${isDeposit ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"}`}
             aria-hidden="true"
           >
             {isDeposit ? <ArrowUpCircle className="h-5 w-5" /> : <ArrowDownCircle className="h-5 w-5" />}
@@ -71,9 +68,7 @@ export function TransactionListItem({ transaction, stashId, onDeleteSuccess }: T
               >
                 {amountWithSign}
               </span>
-              <span className="text-xs text-muted-foreground capitalize">
-                {transaction.transaction_type}
-              </span>
+              <span className="text-xs text-muted-foreground capitalize">{transaction.transaction_type}</span>
             </div>
 
             {transaction.description && (

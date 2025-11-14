@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 // Only allow cleanup in development/test environments
 const isTestEnvironment = process.env.NODE_ENV !== "production";
 
-export const POST: APIRoute = async (context) => {
+export const POST: APIRoute = async () => {
   // Security: Only allow in test/development environment
   if (!isTestEnvironment) {
     return new Response(JSON.stringify({ error: "Cleanup endpoint not available in production" }), { status: 403 });

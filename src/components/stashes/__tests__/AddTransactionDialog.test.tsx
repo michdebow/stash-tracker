@@ -36,7 +36,7 @@ describe("AddTransactionDialog", () => {
         open
         onOpenChange={onOpenChange}
         onSuccess={onSuccess}
-      />,
+      />
     );
 
     fireEvent.change(screen.getByLabelText(/Amount/), {
@@ -76,7 +76,7 @@ describe("AddTransactionDialog", () => {
         currentBalance={500}
         open
         onOpenChange={onOpenChange}
-      />,
+      />
     );
 
     fireEvent.change(screen.getByLabelText(/Amount/), {
@@ -98,7 +98,7 @@ describe("AddTransactionDialog", () => {
         currentBalance={100}
         open
         onOpenChange={vi.fn()}
-      />,
+      />
     );
 
     fireEvent.change(screen.getByLabelText(/Amount/), {
@@ -107,9 +107,7 @@ describe("AddTransactionDialog", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Withdraw" }));
 
-    expect(
-      screen.getByText("Withdrawal amount cannot exceed current balance"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Withdrawal amount cannot exceed current balance")).toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -117,10 +115,7 @@ describe("AddTransactionDialog", () => {
     const onOpenChange = vi.fn();
 
     fetchMock.mockResolvedValueOnce(
-      createFetchResponse(
-        { errors: { amount: "Amount too precise" } },
-        { ok: false, status: 422 },
-      ),
+      createFetchResponse({ errors: { amount: "Amount too precise" } }, { ok: false, status: 422 })
     );
 
     render(
@@ -130,7 +125,7 @@ describe("AddTransactionDialog", () => {
         currentBalance={500}
         open
         onOpenChange={onOpenChange}
-      />,
+      />
     );
 
     fireEvent.change(screen.getByLabelText(/Amount/), {
@@ -140,9 +135,7 @@ describe("AddTransactionDialog", () => {
     fireEvent.click(screen.getByRole("button", { name: "Add Funds" }));
 
     await waitFor(() => {
-      expect(
-        screen.getByText("Amount too precise"),
-      ).toBeInTheDocument();
+      expect(screen.getByText("Amount too precise")).toBeInTheDocument();
     });
 
     expect(onOpenChange).not.toHaveBeenCalled();

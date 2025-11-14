@@ -8,7 +8,7 @@ export const prerender = false;
  * GET /api/expense-categories
  * Retrieves all expense categories available in the system.
  * Categories are system-wide and available to all users.
- * 
+ *
  * Returns:
  * - 200: List of expense categories
  * - 401: User not authenticated

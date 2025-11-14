@@ -1,25 +1,16 @@
 import type { SupabaseClient } from "@/db/supabase.client";
-import type { 
-  StashDTO, 
-  MonthBudgetDTO, 
-  DashboardStashSummary, 
-  DashboardBudgetSummary, 
-  DashboardData 
-} from "@/types";
+import type { DashboardStashSummary, DashboardBudgetSummary, DashboardData } from "@/types";
 
 /**
  * Retrieves a summary of all stashes for the dashboard.
  * Returns total count, total balance, and list of stashes.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @returns Dashboard stash summary
  * @throws Error if the database query fails
  */
-async function getStashesSummary(
-  supabase: SupabaseClient,
-  userId: string
-): Promise<DashboardStashSummary> {
+async function getStashesSummary(supabase: SupabaseClient, userId: string): Promise<DashboardStashSummary> {
   const { data, error } = await supabase
     .from("stashes")
     .select("id, name, current_balance, created_at, updated_at")
@@ -45,7 +36,7 @@ async function getStashesSummary(
 /**
  * Retrieves the budget summary for the current month.
  * Returns budget info and total expenses even if no budget is set.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param yearMonth - The year-month string in YYYY-MM format (defaults to current month)
@@ -97,7 +88,7 @@ async function getBudgetSummary(
 
 /**
  * Retrieves complete dashboard data including stashes and budget summaries.
- * 
+ *
  * @param supabase - The Supabase client instance
  * @param userId - The authenticated user's ID
  * @param yearMonth - Optional year-month string (defaults to current month)
