@@ -37,9 +37,15 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
           <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-medium">
             No credit card required • Free forever
           </p>
-          <Button asChild variant="link" size="sm" class="text-slate-500 dark:text-slate-500 text-sm">
-            <a href="/login">Already have an account? Sign in</a>
-          </Button>
+          <div class="flex flex-col gap-3 items-center">
+            <p class="text-slate-600 dark:text-slate-400">Already have an account?</p>
+            <a
+              href="/login"
+              class="inline-flex items-center justify-center px-10 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 font-semibold text-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+            >
+              Log In
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -219,31 +225,6 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
             </CardHeader>
           </Card>
         </div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="container mx-auto px-4 py-16 sm:py-24">
-      <div
-        class="max-w-4xl mx-auto text-center space-y-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-3xl p-12 sm:p-16 border-2 border-blue-200 dark:border-blue-800/50 shadow-xl"
-      >
-        <h2 class="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-slate-50">
-          Start controlling your finances today
-        </h2>
-        <p class="text-xl sm:text-2xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-          Free account, no hidden costs. Your data stays yours.
-        </p>
-        <div class="pt-6">
-          <a
-            href="/register"
-            class="inline-flex items-center justify-center text-xl sm:text-2xl px-12 py-8 rounded-lg shadow-2xl hover:shadow-3xl transition-all hover:scale-105 font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          >
-            Get Started Free →
-          </a>
-        </div>
-        <p class="text-base text-slate-500 dark:text-slate-500">
-          Join hundreds of users taking control of their finances
-        </p>
       </div>
     </section>
   </main>

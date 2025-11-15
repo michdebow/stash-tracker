@@ -110,7 +110,7 @@ export function LoginForm() {
         </form>
       </Form>
 
-      <AuthLinks variant="stacked" className="text-center" />
+      <AuthLinks variant="stacked" className="text-center" location="login" />
     </div>
   );
 }

@@ -191,7 +191,7 @@ export function RegisterForm() {
           By creating an account, you agree to our privacy practices designed to keep your financial data secure and
           encrypted.
         </p>
-        <AuthLinks variant="stacked" className="text-center" />
+        <AuthLinks variant="stacked" className="text-center" location="register" />
       </div>
     </div>
   );
