@@ -9,7 +9,7 @@ export class HomePage {
   constructor(page: Page) {
     this.page = page;
     this.heroHeading = page.getByRole("heading", { name: "Control your finances with simplicity" });
-    this.loginLink = page.getByRole("link", { name: "Already have an account? Sign in" });
+    this.loginLink = page.getByRole("link", { name: "Log In" });
     this.featuresHeading = page.getByRole("heading", { name: "Everything you need" });
   }
 

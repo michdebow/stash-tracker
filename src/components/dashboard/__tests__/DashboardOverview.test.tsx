@@ -57,8 +57,7 @@ describe("DashboardOverview", () => {
     expect(screen.getByText("2000,00 zł")).toBeInTheDocument();
     expect(screen.getByText("750,00 zł")).toBeInTheDocument();
     expect(screen.getByText("1250,00 zł")).toBeInTheDocument();
-    expect(screen.getByText("Budget Usage")).toBeInTheDocument();
-    expect(screen.getByText("38%")).toBeInTheDocument();
+    expect(screen.getByText("Budget Distribution")).toBeInTheDocument();
 
     expect(fetchMock).toHaveBeenCalledWith("/api/dashboard");
   });

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import { StashBreakdownChart } from "./StashBreakdownChart";
+import { BudgetBreakdownChart } from "./BudgetBreakdownChart";
 import type { DashboardData } from "@/types";
 
 /**
@@ -66,8 +68,15 @@ export function DashboardOverview() {
         {/* Stashes Summary */}
         <Card>
           <CardHeader>
-            <CardTitle>Stashes</CardTitle>
-            <CardDescription>Your savings overview</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Stashes</CardTitle>
+                <CardDescription>Your savings overview</CardDescription>
+              </div>
+              <a href="/app/stashes" className="text-sm text-primary hover:underline">
+                View all →
+              </a>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
@@ -113,8 +122,15 @@ export function DashboardOverview() {
         {/* Budget Summary */}
         <Card>
           <CardHeader>
-            <CardTitle>Budget</CardTitle>
-            <CardDescription>{formatYearMonth(data.budget.yearMonth)} overview</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Budget</CardTitle>
+                <CardDescription>{formatYearMonth(data.budget.yearMonth)} overview</CardDescription>
+              </div>
+              <a href="/app/budget" className="text-sm text-primary hover:underline">
+                View all →
+              </a>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             {data.budget.hasNoBudget ? (
@@ -151,34 +167,6 @@ export function DashboardOverview() {
                     {formatCurrency(data.budget.currentBalance ?? 0)}
                   </span>
                 </div>
-
-                {/* Progress Bar */}
-                <div className="mt-6">
-                  <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="text-muted-foreground">Budget Usage</span>
-                    <span className="font-medium">
-                      {calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet ?? 0)}%
-                    </span>
-                  </div>
-                  <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                    <div
-                      className={`h-full transition-all ${
-                        calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet ?? 0) > 100
-                          ? "bg-destructive"
-                          : calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet ?? 0) > 80
-                            ? "bg-yellow-500"
-                            : "bg-primary"
-                      }`}
-                      style={{
-                        width: `${Math.min(calculateBudgetPercentage(data.budget.totalExpenses, data.budget.budgetSet ?? 0), 100)}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <a href="/app/budget" className="inline-block text-sm text-primary hover:underline mt-4">
-                  View detailed budget →
-                </a>
               </>
             )}
 
@@ -195,6 +183,35 @@ export function DashboardOverview() {
             )}
           </CardContent>
         </Card>
+      </div>
+
+      {/* Charts Grid */}
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Stash Breakdown Chart */}
+        {data.stashes.stashes.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Stash Distribution</CardTitle>
+              <CardDescription>Money distribution across your stashes</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <StashBreakdownChart stashes={data.stashes.stashes} />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Budget Breakdown Chart */}
+        {!data.budget.hasNoBudget && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Budget Distribution</CardTitle>
+              <CardDescription>Budget usage for {formatYearMonth(data.budget.yearMonth)}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <BudgetBreakdownChart budgetSet={data.budget.budgetSet ?? 0} totalExpenses={data.budget.totalExpenses} />
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Quick Actions */}
@@ -302,6 +319,17 @@ function DashboardSkeleton() {
         <Skeleton className="h-5 w-96" />
       </div>
 
+      {/* Chart Skeleton */}
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-6 w-32 mb-2" />
+          <Skeleton className="h-4 w-48" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-80 w-full" />
+        </CardContent>
+      </Card>
+
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -324,6 +352,7 @@ function DashboardSkeleton() {
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-64 w-full mt-6" />
           </CardContent>
         </Card>
       </div>
@@ -348,12 +377,4 @@ function formatYearMonth(yearMonth: string): string {
   const [year, month] = yearMonth.split("-");
   const date = new Date(parseInt(year), parseInt(month) - 1);
   return date.toLocaleDateString("en-US", { year: "numeric", month: "long" });
-}
-
-/**
- * Calculate budget usage percentage
- */
-function calculateBudgetPercentage(expenses: number, budget: number): number {
-  if (budget === 0) return 0;
-  return Math.round((expenses / budget) * 100);
 }

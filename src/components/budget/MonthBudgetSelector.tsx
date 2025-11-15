@@ -14,7 +14,12 @@ interface MonthBudgetSelectorProps {
  * Displays a dropdown of months that have budgets set
  * Defaults to current month
  */
-export function MonthBudgetSelector({ value, onChange, disabled = false, refreshTrigger = 0 }: MonthBudgetSelectorProps) {
+export function MonthBudgetSelector({
+  value,
+  onChange,
+  disabled = false,
+  refreshTrigger = 0,
+}: MonthBudgetSelectorProps) {
   const [availableMonths, setAvailableMonths] = useState<MonthBudgetListItemDTO[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
