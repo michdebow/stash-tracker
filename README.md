@@ -1,3 +1,8 @@
+# Update 22.11.2025
+
+- The app is now live at https://st.mdbw.pl
+- Known issue: when trying to log out - "Cross-site POST form submissions are forbidden" appears. Fix in progress.
+
 # Important notes about the project:
 
 - The IDE used to develop the project was JetBrains PHP Storm + Windsurf plugin (using Cascade for agents). Since it had
